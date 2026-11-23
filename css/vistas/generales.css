@@ -1,0 +1,79 @@
+/* ==========================================================================
+   VISTAS GENERALES · Carga inicial, página 404 y vista "en construcción"
+   ========================================================================== */
+
+/* Los custom elements son "inline" por defecto: las vistas deben ser bloques */
+.vista {
+  display: block;
+}
+
+/* Indicador mientras la app arranca */
+.cargando-app {
+  display: grid;
+  place-items: center;
+  min-height: 40vh;
+}
+
+/* Mensaje centrado (404, en construcción...) */
+.vista-mensaje {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-3);
+  max-width: 34rem;
+  margin: var(--espacio-8) auto;
+  padding: var(--espacio-10) var(--espacio-6);
+  text-align: center;
+}
+
+.vista-mensaje__icono {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+  animation: flotar 3s ease-in-out infinite;
+}
+
+.vista-mensaje__icono svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.vista-mensaje__icono--acento {
+  background-color: var(--color-acento-suave);
+  color: var(--color-acento-texto);
+}
+
+.vista-mensaje__codigo {
+  background: var(--degradado-texto);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-4xl);
+  font-weight: var(--peso-extra);
+  line-height: 1;
+}
+
+.vista-mensaje__titulo {
+  font-size: var(--texto-2xl);
+}
+
+.vista-mensaje__texto {
+  max-width: 44ch;
+  color: var(--color-texto-secundario);
+}
+
+.vista-mensaje__texto code {
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie-alterna);
+  overflow-wrap: anywhere;
+}
+
+.vista-mensaje .btn {
+  margin-top: var(--espacio-3);
+}

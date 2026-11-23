@@ -10,10 +10,18 @@
 }
 
 /* ---------- Encabezado fijo con efecto vidrio ---------- */
-.encabezado {
+
+/* El custom element es el que se queda fijo arriba: si lo fuera el <header>
+   interno, no podría "pegarse" porque su padre tiene exactamente su altura. */
+encabezado-app {
   position: sticky;
   top: 0;
   z-index: var(--capa-encabezado);
+  display: block;
+}
+
+.encabezado {
+  position: relative;
   background-color: var(--color-encabezado);
   border-bottom: 1px solid var(--color-borde);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
@@ -54,6 +62,98 @@
 .marca__texto strong {
   color: var(--color-enlace);
   font-weight: var(--peso-extra);
+}
+
+/* ---------- Navegación principal ---------- */
+.navegacion {
+  margin-left: auto;
+}
+
+.navegacion__lista {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.navegacion__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-2) var(--espacio-3);
+  border-radius: var(--radio-md);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-seminegrita);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--transicion-rapida),
+    color var(--transicion-rapida);
+}
+
+.navegacion__enlace:hover {
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto);
+}
+
+.navegacion__enlace[aria-current='page'] {
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+}
+
+.navegacion__enlace svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.encabezado__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+/* El botón de menú solo existe en pantallas pequeñas.
+   Se usa ".encabezado ..." para ganarle en especificidad a ".btn" (display: inline-flex). */
+.encabezado .encabezado__boton-menu {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .encabezado .encabezado__boton-menu {
+    display: inline-flex;
+  }
+
+  .encabezado__acciones {
+    margin-left: auto;
+  }
+
+  /* Menú desplegable bajo el encabezado */
+  .navegacion {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: none;
+    padding: var(--espacio-3) var(--espacio-4) var(--espacio-4);
+    border-bottom: 1px solid var(--color-borde);
+    background-color: var(--color-superficie);
+    box-shadow: var(--sombra-lg);
+  }
+
+  .navegacion--abierta {
+    display: block;
+    animation: deslizar-arriba var(--transicion-media) both;
+  }
+
+  .navegacion__lista {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navegacion__enlace {
+    padding: var(--espacio-3);
+    font-size: var(--texto-base);
+  }
 }
 
 /* ---------- Contenido principal ---------- */

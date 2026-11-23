@@ -119,6 +119,18 @@ kbd {
   outline-offset: 2px;
 }
 
+/* Títulos que reciben el foco por código al cambiar de vista (no por teclado) */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+/* Íconos SVG en línea (utilidades/iconos.js) */
+.icono {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 ::selection {
   background-color: var(--color-primario);
   color: var(--color-sobre-primario);

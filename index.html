@@ -41,181 +41,16 @@
 <body>
   <a class="saltar-contenido" href="#contenido-principal">Saltar al contenido principal</a>
 
-  <!-- Encabezado (en la parte 3 se convierte en el Web Component <encabezado-app>) -->
-  <header class="encabezado">
-    <div class="contenedor encabezado__contenido">
-      <a class="marca" href="./" aria-label="Acme School, ir al inicio">
-        <img class="marca__logo" src="assets/img/logo.svg" alt="" width="36" height="36">
-        <span class="marca__texto">Acme <strong>School</strong></span>
-      </a>
-    </div>
-  </header>
+  <!-- Web Component: logo, navegación y botón de modo oscuro -->
+  <encabezado-app></encabezado-app>
 
   <main id="contenido-principal" class="contenido-principal" tabindex="-1">
+    <!-- Aquí el enrutador pinta la vista de cada ruta (#/, #/login, #/admin/...) -->
     <div id="app" class="contenedor">
-
-      <!-- ================================================================
-           CONTENIDO TEMPORAL (Parte 1)
-           Vista previa de la identidad visual. En la parte 3 el enrutador
-           reemplaza este bloque por las vistas reales de la aplicación.
-           ================================================================ -->
-      <section class="hero animar-entrada" aria-labelledby="titulo-bienvenida">
-        <span class="insignia insignia--acento">Parte 2 de 10 · Datos y localStorage</span>
-        <h1 id="titulo-bienvenida" class="hero__titulo">
-          Plataforma de exámenes <span class="texto-marca">Acme School</span>
-        </h1>
-        <p class="hero__descripcion">
-          Crea, administra y presenta exámenes en línea desde cualquier dispositivo.
-        </p>
-        <p class="texto-pequeno texto-tenue" style="margin-top: var(--espacio-3)">
-          Los datos de ejemplo ya se guardan en el navegador: DevTools (F12) → Application → Local Storage.
-        </p>
-        <div class="hero__acciones">
-          <button type="button" class="btn btn--primario btn--grande">Presentar un examen</button>
-          <button type="button" class="btn btn--secundario btn--grande">Acceso administrativo</button>
-        </div>
-      </section>
-
-      <section class="seccion" aria-labelledby="titulo-sistema-diseno">
-        <h2 id="titulo-sistema-diseno" class="seccion__titulo">Vista previa del sistema de diseño</h2>
-        <p class="seccion__descripcion texto-tenue">
-          Sección temporal para revisar colores, botones, formularios y tablas en tema claro y oscuro.
-        </p>
-
-        <div class="rejilla-tarjetas">
-          <article class="tarjeta escalonado" style="--indice: 0">
-            <div class="tarjeta__encabezado">
-              <h3 class="tarjeta__titulo">Botones</h3>
-            </div>
-            <div class="grupo-botones">
-              <button type="button" class="btn btn--primario">Primario</button>
-              <button type="button" class="btn btn--secundario">Secundario</button>
-              <button type="button" class="btn btn--acento">Acento</button>
-              <button type="button" class="btn btn--peligro">Eliminar</button>
-              <button type="button" class="btn btn--fantasma">Cancelar</button>
-              <button type="button" class="btn">Neutro</button>
-              <button type="button" class="btn btn--primario" disabled>Deshabilitado</button>
-              <button type="button" class="btn btn--primario" aria-busy="true">Guardando</button>
-            </div>
-          </article>
-
-          <article class="tarjeta escalonado" style="--indice: 1">
-            <div class="tarjeta__encabezado">
-              <h3 class="tarjeta__titulo">Insignias y alertas</h3>
-            </div>
-            <div class="pila">
-              <div class="grupo-botones">
-                <span class="insignia insignia--primario">Administrativo</span>
-                <span class="insignia insignia--acento">Docente</span>
-                <span class="insignia insignia--exito">Aprobado</span>
-                <span class="insignia insignia--peligro">No aprobado</span>
-                <span class="insignia">Sin preguntas</span>
-              </div>
-              <div class="alerta alerta--info" role="note">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                <span>El examen tiene 10 minutos para resolverse.</span>
-              </div>
-              <div class="alerta alerta--exito" role="note">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-                <span>¡Felicitaciones! Aprobaste el examen.</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="tarjeta escalonado" style="--indice: 2">
-            <div class="tarjeta__encabezado">
-              <h3 class="tarjeta__titulo">Formulario</h3>
-            </div>
-            <form class="formulario" novalidate>
-              <div class="campo">
-                <label class="campo__etiqueta" for="demo-email">
-                  Correo electrónico <span class="campo__obligatorio" aria-hidden="true">*</span>
-                </label>
-                <input class="campo__entrada" id="demo-email" type="email" placeholder="nombre@acmeschool.edu" required>
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="demo-identificacion">
-                  Número de identificación <span class="campo__obligatorio" aria-hidden="true">*</span>
-                </label>
-                <input class="campo__entrada" id="demo-identificacion" type="text" inputmode="numeric"
-                  aria-invalid="true" aria-describedby="demo-identificacion-error" required>
-                <p class="campo__error" id="demo-identificacion-error">Este campo es obligatorio.</p>
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="demo-cargo">Cargo</label>
-                <select class="campo__entrada" id="demo-cargo">
-                  <option value="administrativo">Administrativo</option>
-                  <option value="docente">Docente</option>
-                </select>
-              </div>
-              <div class="formulario__acciones">
-                <button type="button" class="btn btn--fantasma">Cancelar</button>
-                <button type="button" class="btn btn--primario">Guardar</button>
-              </div>
-            </form>
-          </article>
-        </div>
-      </section>
-
-      <section class="seccion" aria-labelledby="titulo-tabla-demo">
-        <h2 id="titulo-tabla-demo" class="seccion__titulo">Tabla responsiva</h2>
-        <p class="seccion__descripcion texto-tenue">
-          En pantallas pequeñas cada fila se transforma en una tarjeta.
-        </p>
-        <div class="tabla-contenedor">
-          <table class="tabla tabla--responsiva">
-            <caption class="sr-only">Exámenes de ejemplo</caption>
-            <thead>
-              <tr>
-                <th scope="col">Código</th>
-                <th scope="col">Título</th>
-                <th scope="col">Tiempo</th>
-                <th scope="col">Aprobación</th>
-                <th scope="col">Estado</th>
-                <th scope="col" class="columna-acciones">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td data-etiqueta="Código"><span class="codigo">JS-101</span></td>
-                <td data-etiqueta="Título">Fundamentos de JavaScript</td>
-                <td data-etiqueta="Tiempo">10 min</td>
-                <td data-etiqueta="Aprobación">60 %</td>
-                <td data-etiqueta="Estado"><span class="insignia insignia--exito">5 preguntas</span></td>
-                <td class="columna-acciones">
-                  <div class="tabla__acciones">
-                    <button type="button" class="btn btn--fantasma btn--icono" aria-label="Editar Fundamentos de JavaScript">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                    </button>
-                    <button type="button" class="btn btn--peligro-fantasma btn--icono" aria-label="Eliminar Fundamentos de JavaScript">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td data-etiqueta="Código"><span class="codigo">CG-001</span></td>
-                <td data-etiqueta="Título">Cultura general</td>
-                <td data-etiqueta="Tiempo">5 min</td>
-                <td data-etiqueta="Aprobación">70 %</td>
-                <td data-etiqueta="Estado"><span class="insignia">Sin preguntas</span></td>
-                <td class="columna-acciones">
-                  <div class="tabla__acciones">
-                    <button type="button" class="btn btn--fantasma btn--icono" aria-label="Editar Cultura general">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                    </button>
-                    <button type="button" class="btn btn--peligro-fantasma btn--icono" aria-label="Eliminar Cultura general">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-      <!-- ============ FIN DEL CONTENIDO TEMPORAL ============ -->
-
+      <div class="cargando-app" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="sr-only">Cargando la aplicación…</span>
+      </div>
     </div>
   </main>
 
@@ -225,6 +60,10 @@
       <p class="texto-tenue">Hecho con HTML, CSS y JavaScript · Web Components</p>
     </div>
   </footer>
+
+  <!-- Web Components globales: notificaciones emergentes y diálogo de confirmación -->
+  <contenedor-notificaciones></contenedor-notificaciones>
+  <dialogo-confirmacion></dialogo-confirmacion>
 
   <!-- Aviso si se abre con doble clic (file://): los módulos ES necesitan un servidor local -->
   <div id="aviso-servidor" class="aviso-servidor" role="alert" hidden>

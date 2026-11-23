@@ -15,3 +15,6 @@
 @import url('./layout.css');
 @import url('./componentes.css');
 @import url('./animaciones.css');
+
+/* Vistas */
+@import url('./vistas/generales.css');

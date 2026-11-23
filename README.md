@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 2 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 3 de 10**
 
 ---
 
@@ -15,7 +15,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 |:-----:|-----------|:------:|
 | 1 | Estructura base e identidad visual (sistema de diseño, tema claro/oscuro) | ✅ |
 | 2 | Modelo de datos en JSON, persistencia con `localStorage` y datos iniciales | ✅ |
-| 3 | Enrutador SPA y Web Components compartidos (encabezado, notificaciones, diálogos, modo oscuro) | ⏳ |
+| 3 | Enrutador SPA y Web Components compartidos (encabezado, notificaciones, diálogos, modo oscuro) | ✅ |
 | 4 | Login y protección de las rutas privadas | ⏳ |
 | 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ⏳ |
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ⏳ |
@@ -77,20 +77,77 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │   ├── base.css            # Reset, estilos base y utilidades de accesibilidad
 │   ├── layout.css          # Contenedor, encabezado, pie de página y rejillas
 │   ├── componentes.css     # Botones, tarjetas, formularios, tablas, insignias, alertas, diálogos
-│   └── animaciones.css     # Keyframes y soporte de movimiento reducido
+│   ├── animaciones.css     # Keyframes y soporte de movimiento reducido
+│   └── vistas/
+│       └── generales.css   # Carga inicial, página 404 y vista "en construcción"
 └── js/
-    ├── main.js             # Punto de entrada: prepara los datos y arranca la app
+    ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
+    ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
     ├── config/
-    │   └── constantes.js   # Claves de localStorage, cargos y límites de cada campo
+    │   ├── constantes.js   # Claves de localStorage, temas, cargos y límites de cada campo
+    │   └── rutas.js        # Tabla de rutas: ruta → Web Component
     ├── datos/
     │   └── datos-iniciales.js  # Usuarios y exámenes de ejemplo (primer uso)
     ├── servicios/
     │   ├── almacenamiento.js   # Único módulo que lee/escribe localStorage (JSON)
-    │   └── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
-    └── utilidades/
-        ├── cifrado.js          # Hash SHA-256 + sal para las contraseñas (Web Crypto API)
-        └── generador-id.js     # Identificadores únicos (UUID v4)
+    │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
+    │   └── servicio-tema.js    # Modo claro / oscuro
+    ├── utilidades/
+    │   ├── cifrado.js          # Hash SHA-256 + sal para las contraseñas (Web Crypto API)
+    │   ├── dom.js              # escaparHTML(): evita inyección de código (XSS)
+    │   ├── generador-id.js     # Identificadores únicos (UUID v4)
+    │   └── iconos.js           # Íconos SVG en línea
+    └── componentes/
+        ├── compartidos/        # Web Components reutilizables en toda la app
+        │   ├── encabezado-app.js
+        │   ├── contenedor-notificaciones.js
+        │   ├── dialogo-confirmacion.js
+        │   ├── campo-busqueda.js
+        │   └── estado-vacio.js
+        └── generales/
+            ├── vista-no-encontrada.js
+            └── vista-en-construccion.js
 ```
+
+---
+
+## 🧩 Web Components
+
+Cada pieza de la interfaz es un **Custom Element** (`class ... extends HTMLElement` + `customElements.define`).
+
+| Componente | Shadow DOM | Qué hace |
+|------------|:----------:|----------|
+| `<encabezado-app>` | No | Logo, navegación (con menú móvil) y botón de modo oscuro. Marca la sección actual y oculta la navegación mientras se presenta un examen. |
+| `<contenedor-notificaciones>` | Sí | Mensajes emergentes de éxito, error, advertencia e información. Se cierran solos y los anuncia el lector de pantalla. |
+| `<dialogo-confirmacion>` | Sí | Confirmación accesible basada en `<dialog>`. `await confirmar({...})` devuelve `true` o `false`. |
+| `<campo-busqueda>` | Sí | Buscador para las tablas. Emite el evento `buscar` con *debounce* (espera a que el usuario deje de escribir). |
+| `<estado-vacio>` | Sí | Mensaje amigable cuando una lista está vacía. Tiene atributos `icono`, `titulo` y `mensaje`, y un `<slot>` para acciones. |
+| `<vista-no-encontrada>` | No | Página 404. |
+| `<vista-en-construccion>` | No | Se muestra mientras la vista de una ruta todavía no existe. |
+
+**¿Por qué algunos usan Shadow DOM y otros no?**
+
+- **Con Shadow DOM:** los componentes pequeños y autónomos encapsulan sus estilos. Así no afectan ni se ven afectados por el resto de la página. Toman los colores de las variables CSS globales, que sí atraviesan el Shadow DOM, y reutilizan `componentes.css` mediante `<link>`.
+- **Sin Shadow DOM (light DOM):** las vistas y el encabezado usan directamente el sistema de diseño global.
+
+---
+
+## 🧭 Rutas
+
+La aplicación es una **SPA**: un solo `index.html`, y el enrutador cambia la vista según el *hash* de la URL.
+
+| Ruta | Vista | Acceso |
+|------|-------|--------|
+| `#/` | Catálogo de exámenes disponibles | Público |
+| `#/login` | Inicio de sesión | Público |
+| `#/examen/:id` | Presentar un examen | Público |
+| `#/admin/examenes` | Gestión de exámenes | Privado |
+| `#/admin/examenes/:id/preguntas` | Preguntas de un examen | Privado |
+| `#/admin/usuarios` | Gestión de usuarios | Privado |
+| `#/admin/resultados` | Panel de resultados | Privado |
+| `#/admin/respaldo` | Exportar / importar datos | Privado |
+
+Cualquier otra ruta muestra la página 404.
 
 ---
 

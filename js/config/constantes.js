@@ -23,6 +23,12 @@ export const CLAVES_ALMACENAMIENTO = Object.freeze({
   TEMA: 'acme_tema',
 });
 
+/** Temas visuales disponibles (se aplican con data-tema en <html>). */
+export const TEMAS = Object.freeze({
+  CLARO: 'claro',
+  OSCURO: 'oscuro',
+});
+
 /** Cargos posibles de un usuario del área privada. */
 export const CARGOS = Object.freeze({
   ADMINISTRATIVO: 'administrativo',
