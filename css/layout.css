@@ -1,0 +1,228 @@
+/* ==========================================================================
+   LAYOUT · Estructura general de la página
+   Contenedor, encabezado, contenido principal, pie de página y rejillas.
+   ========================================================================== */
+
+/* Centra el contenido y limita su ancho máximo */
+.contenedor {
+  width: min(100% - 2 * var(--espacio-4), var(--ancho-maximo));
+  margin-inline: auto;
+}
+
+/* ---------- Encabezado fijo con efecto vidrio ---------- */
+.encabezado {
+  position: sticky;
+  top: 0;
+  z-index: var(--capa-encabezado);
+  background-color: var(--color-encabezado);
+  border-bottom: 1px solid var(--color-borde);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+}
+
+.encabezado__contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  min-height: var(--altura-encabezado);
+}
+
+/* Logo + nombre de la escuela */
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  color: var(--color-texto);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.marca__logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  transition: transform var(--transicion-media);
+}
+
+.marca:hover .marca__logo {
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.marca__texto strong {
+  color: var(--color-enlace);
+  font-weight: var(--peso-extra);
+}
+
+/* ---------- Contenido principal ---------- */
+.contenido-principal {
+  flex: 1;
+  padding-block: var(--espacio-8) var(--espacio-12);
+}
+
+/* Recibe el foco por código (enlace "saltar al contenido"); no necesita contorno */
+.contenido-principal:focus {
+  outline: none;
+}
+
+/* ---------- Pie de página ---------- */
+.pie-pagina {
+  padding-block: var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-sm);
+}
+
+.pie-pagina__contenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2) var(--espacio-6);
+}
+
+/* ==========================================================================
+   SECCIONES REUTILIZABLES
+   ========================================================================== */
+
+/* Hero: bloque de bienvenida destacado */
+.hero {
+  position: relative;
+  margin-bottom: var(--espacio-10);
+  padding: var(--espacio-12) var(--espacio-6);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-xl);
+  background: var(--degradado-hero);
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__titulo {
+  margin-block: var(--espacio-4) var(--espacio-3);
+  font-size: var(--texto-4xl);
+  font-weight: var(--peso-extra);
+}
+
+.hero__descripcion {
+  max-width: 60ch;
+  margin-inline: auto;
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-lg);
+}
+
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-8);
+}
+
+/* Encabezado de cada vista: título, descripción y acciones */
+.encabezado-vista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-8);
+}
+
+.encabezado-vista__titulo {
+  font-size: var(--texto-3xl);
+}
+
+.encabezado-vista__descripcion {
+  max-width: 65ch;
+  margin-top: var(--espacio-1);
+  color: var(--color-texto-secundario);
+}
+
+.seccion {
+  margin-bottom: var(--espacio-10);
+}
+
+.seccion__titulo {
+  margin-bottom: var(--espacio-2);
+  font-size: var(--texto-2xl);
+}
+
+.seccion__descripcion {
+  margin-bottom: var(--espacio-6);
+}
+
+/* ==========================================================================
+   REJILLAS Y AGRUPADORES
+   ========================================================================== */
+
+/* Tarjetas que se acomodan solas según el ancho disponible */
+.rejilla-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--espacio-6);
+}
+
+/* Vistas de administración: formulario (lateral) + tabla (principal) */
+.rejilla-admin {
+  display: grid;
+  gap: var(--espacio-6);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .rejilla-admin {
+    grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+  }
+
+  /* El formulario acompaña el scroll en pantallas grandes */
+  .rejilla-admin__lateral {
+    position: sticky;
+    top: calc(var(--altura-encabezado) + var(--espacio-6));
+  }
+}
+
+/* Apila elementos en columna con separación uniforme */
+.pila {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+
+/* Alinea elementos en fila y los envuelve si no caben */
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+/* ==========================================================================
+   AVISO: el proyecto se abrió con doble clic (file://)
+   ========================================================================== */
+.aviso-servidor {
+  position: fixed;
+  inset: auto var(--espacio-4) var(--espacio-4);
+  z-index: var(--capa-notificaciones);
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: var(--espacio-4) var(--espacio-5);
+  border: 1px solid var(--color-advertencia-borde);
+  border-radius: var(--radio-lg);
+  /* Tinte de advertencia sobre una superficie opaca (funciona en ambos temas) */
+  background:
+    linear-gradient(var(--color-advertencia-suave), var(--color-advertencia-suave)),
+    var(--color-superficie-elevada);
+  color: var(--color-advertencia-texto);
+  box-shadow: var(--sombra-lg);
+  font-size: var(--texto-sm);
+}
+
+.aviso-servidor strong {
+  display: block;
+  margin-bottom: var(--espacio-1);
+  font-size: var(--texto-base);
+}

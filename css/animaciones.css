@@ -1,0 +1,146 @@
+/* ==========================================================================
+   ANIMACIONES · Keyframes y clases de movimiento reutilizables
+   Todas se desactivan si el usuario pidió "reducir movimiento" en su sistema.
+   ========================================================================== */
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes deslizar-arriba {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes escalar-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes entrar-derecha {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes salir-derecha {
+  to {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Latido suave (p. ej. el reloj cuando queda poco tiempo) */
+@keyframes pulso {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* Sacudida horizontal (p. ej. error al iniciar sesión) */
+@keyframes sacudir {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+/* Resalta brevemente un elemento recién creado o actualizado */
+@keyframes destello {
+  from {
+    background-color: var(--color-primario-suave-hover);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ---------- Clases utilitarias ---------- */
+.animar-entrada {
+  animation: deslizar-arriba var(--transicion-lenta) both;
+}
+
+.animar-aparecer {
+  animation: aparecer var(--transicion-media) both;
+}
+
+.animar-escala {
+  animation: escalar-entrada var(--transicion-media) both;
+}
+
+.animar-sacudir {
+  animation: sacudir 0.4s ease;
+}
+
+.animar-destello {
+  animation: destello 1.4s ease-out;
+}
+
+/* Entrada escalonada en listas: JS asigna --indice (0, 1, 2...) a cada elemento */
+.escalonado {
+  animation: deslizar-arriba var(--transicion-lenta) both;
+  animation-delay: calc(var(--indice, 0) * 60ms);
+}
+
+/* ---------- Accesibilidad: movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

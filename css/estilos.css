@@ -1,0 +1,17 @@
+/* ==========================================================================
+   ACME SCHOOL · Hoja de estilos principal
+   --------------------------------------------------------------------------
+   Punto de entrada único: importa, en orden, cada capa del sistema de diseño.
+   1. variables    → tokens (colores, tipografía, espacios) y tema oscuro
+   2. base         → reset y estilos de elementos HTML
+   3. layout       → estructura de la página y rejillas
+   4. componentes  → botones, tarjetas, formularios, tablas...
+   5. animaciones  → keyframes y movimiento reducido
+   6. vistas       → estilos propios de cada pantalla (se agregan por partes)
+   ========================================================================== */
+
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./layout.css');
+@import url('./componentes.css');
+@import url('./animaciones.css');

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="fondo-logo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <!-- Fondo índigo redondeado -->
+  <rect width="64" height="64" rx="16" fill="url(#fondo-logo)"/>
+  <!-- Letra "A" de Acme -->
+  <path d="M19 47 32 17l13 30" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24.5 37h15" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <!-- Punto ámbar (color de acento) -->
+  <circle cx="49" cy="16" r="6" fill="#F59E0B" stroke="#FFFFFF" stroke-width="2.5"/>
+</svg>

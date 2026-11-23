@@ -1,0 +1,200 @@
+/* ==========================================================================
+   VARIABLES · Tokens del sistema de diseño de Acme School
+   --------------------------------------------------------------------------
+   Toda la identidad visual (colores, tipografía, espacios, sombras...) vive
+   aquí. El resto de hojas de estilo y los Web Components solo usan estas
+   variables, así un cambio en este archivo se refleja en toda la app.
+
+   - Paleta: índigo (primario) + ámbar (acento).
+   - Los colores de texto cumplen el contraste mínimo WCAG AA (4.5:1).
+   - El tema oscuro se activa con el atributo data-tema="oscuro" en <html>.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- Marca: índigo (primario) ---------- */
+  --color-primario: #4f46e5;
+  --color-primario-hover: #4338ca;
+  --color-primario-suave: #eef2ff;
+  --color-primario-suave-hover: #e0e7ff;
+  --color-primario-borde: #c7d2fe;
+  --color-primario-texto: #3730a3;
+  --color-sobre-primario: #ffffff;
+
+  /* ---------- Marca: ámbar (acento) ---------- */
+  --color-acento: #f59e0b;
+  --color-acento-hover: #d97706;
+  --color-acento-suave: #fef3c7;
+  --color-acento-borde: #fde68a;
+  --color-acento-texto: #92400e;
+  --color-sobre-acento: #0f172a;
+
+  /* ---------- Neutros ---------- */
+  --color-fondo: #f8fafc;
+  --color-superficie: #ffffff;
+  --color-superficie-alterna: #f1f5f9;
+  --color-superficie-elevada: #ffffff;
+  --color-encabezado: rgba(255, 255, 255, 0.82);
+  --color-borde: #e2e8f0;
+  --color-borde-fuerte: #cbd5e1;
+  --color-texto: #0f172a;
+  --color-texto-secundario: #475569;
+  --color-texto-tenue: #5b6b82;
+  --color-enlace: #4f46e5;
+  --color-foco: #4f46e5;
+
+  /* ---------- Estados ---------- */
+  --color-exito: #10b981;
+  --color-exito-suave: #ecfdf5;
+  --color-exito-borde: #a7f3d0;
+  --color-exito-texto: #047857;
+
+  --color-peligro: #dc2626;
+  --color-peligro-hover: #b91c1c;
+  --color-peligro-suave: #fef2f2;
+  --color-peligro-borde: #fecaca;
+  --color-peligro-texto: #b91c1c;
+
+  --color-advertencia: #f59e0b;
+  --color-advertencia-suave: #fffbeb;
+  --color-advertencia-borde: #fde68a;
+  --color-advertencia-texto: #92400e;
+
+  --color-info: #0ea5e9;
+  --color-info-suave: #f0f9ff;
+  --color-info-borde: #bae6fd;
+  --color-info-texto: #0369a1;
+
+  /* ---------- Degradados ---------- */
+  --degradado-marca: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --degradado-texto: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --degradado-hero:
+    radial-gradient(circle at 12% 18%, rgba(79, 70, 229, 0.14), transparent 42%),
+    radial-gradient(circle at 88% 30%, rgba(245, 158, 11, 0.16), transparent 38%),
+    var(--color-superficie);
+
+  /* ---------- Tipografía ---------- */
+  --fuente-titulos: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fuente-cuerpo: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fuente-mono: ui-monospace, 'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-base: 1rem;
+  --texto-lg: 1.125rem;
+  --texto-xl: 1.25rem;
+  --texto-2xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --texto-3xl: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+  --texto-4xl: clamp(2.125rem, 1.5rem + 2.8vw, 3.5rem);
+
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --peso-seminegrita: 600;
+  --peso-negrita: 700;
+  --peso-extra: 800;
+
+  --interlineado-ajustado: 1.2;
+  --interlineado-normal: 1.6;
+
+  /* ---------- Espaciado (escala de 4 px) ---------- */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-5: 1.25rem;
+  --espacio-6: 1.5rem;
+  --espacio-8: 2rem;
+  --espacio-10: 2.5rem;
+  --espacio-12: 3rem;
+  --espacio-16: 4rem;
+
+  /* ---------- Bordes redondeados ---------- */
+  --radio-sm: 6px;
+  --radio-md: 10px;
+  --radio-lg: 16px;
+  --radio-xl: 24px;
+  --radio-completo: 999px;
+
+  /* ---------- Sombras ---------- */
+  --sombra-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --sombra-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --sombra-lg: 0 18px 40px -12px rgba(15, 23, 42, 0.2);
+  --sombra-primario: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
+  --anillo-foco: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  --anillo-foco-error: 0 0 0 3px rgba(220, 38, 38, 0.25);
+
+  /* ---------- Transiciones ---------- */
+  --transicion-rapida: 150ms ease;
+  --transicion-media: 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transicion-lenta: 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ---------- Capas (z-index) ---------- */
+  --capa-encabezado: 100;
+  --capa-dialogo: 1000;
+  --capa-notificaciones: 1100;
+
+  /* ---------- Medidas de la estructura ---------- */
+  --ancho-maximo: 1200px;
+  --ancho-lectura: 760px;
+  --altura-encabezado: 4rem;
+}
+
+/* ==========================================================================
+   TEMA OSCURO
+   Solo se sobrescriben los tokens que cambian; el resto se hereda de :root.
+   ========================================================================== */
+[data-tema='oscuro'] {
+  color-scheme: dark;
+
+  --color-primario-suave: rgba(129, 140, 248, 0.16);
+  --color-primario-suave-hover: rgba(129, 140, 248, 0.26);
+  --color-primario-borde: rgba(129, 140, 248, 0.4);
+  --color-primario-texto: #c7d2fe;
+
+  --color-acento-suave: rgba(251, 191, 36, 0.14);
+  --color-acento-borde: rgba(251, 191, 36, 0.4);
+  --color-acento-texto: #fcd34d;
+
+  --color-fondo: #0b1120;
+  --color-superficie: #131b2e;
+  --color-superficie-alterna: #1a2338;
+  --color-superficie-elevada: #172036;
+  --color-encabezado: rgba(19, 27, 46, 0.82);
+  --color-borde: #253150;
+  --color-borde-fuerte: #34426a;
+  --color-texto: #e2e8f0;
+  --color-texto-secundario: #a3b1c6;
+  --color-texto-tenue: #8494ad;
+  --color-enlace: #a5b4fc;
+  --color-foco: #818cf8;
+
+  --color-exito-suave: rgba(52, 211, 153, 0.12);
+  --color-exito-borde: rgba(52, 211, 153, 0.35);
+  --color-exito-texto: #34d399;
+
+  --color-peligro-suave: rgba(248, 113, 113, 0.12);
+  --color-peligro-borde: rgba(248, 113, 113, 0.35);
+  --color-peligro-texto: #f87171;
+
+  --color-advertencia-suave: rgba(251, 191, 36, 0.12);
+  --color-advertencia-borde: rgba(251, 191, 36, 0.35);
+  --color-advertencia-texto: #fbbf24;
+
+  --color-info-suave: rgba(125, 211, 252, 0.12);
+  --color-info-borde: rgba(125, 211, 252, 0.35);
+  --color-info-texto: #7dd3fc;
+
+  --degradado-texto: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+  --degradado-hero:
+    radial-gradient(circle at 12% 18%, rgba(99, 102, 241, 0.22), transparent 42%),
+    radial-gradient(circle at 88% 30%, rgba(245, 158, 11, 0.12), transparent 38%),
+    var(--color-superficie);
+
+  --sombra-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sombra-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+  --sombra-lg: 0 18px 40px -12px rgba(0, 0, 0, 0.65);
+  --sombra-primario: 0 8px 22px -6px rgba(99, 102, 241, 0.55);
+  --anillo-foco: 0 0 0 3px rgba(129, 140, 248, 0.45);
+  --anillo-foco-error: 0 0 0 3px rgba(248, 113, 113, 0.35);
+}

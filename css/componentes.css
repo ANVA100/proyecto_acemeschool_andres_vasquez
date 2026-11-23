@@ -1,0 +1,691 @@
+/* ==========================================================================
+   COMPONENTES · Piezas visuales reutilizables de la interfaz
+   Botones, tarjetas, formularios, tablas, insignias, alertas y diálogos.
+   Nomenclatura BEM en español: .bloque__elemento--modificador
+
+   Nota: los Web Components con Shadow DOM que necesitan estos estilos
+   enlazan este mismo archivo dentro de su sombra (<link rel="stylesheet">),
+   así existe una sola fuente de verdad para el diseño.
+   ========================================================================== */
+
+/* ==========================================================================
+   BOTONES
+   Cada variante solo cambia las variables --btn-*; la estructura es común.
+   ========================================================================== */
+.btn {
+  --btn-fondo: var(--color-superficie);
+  --btn-fondo-hover: var(--color-superficie-alterna);
+  --btn-texto: var(--color-texto);
+  --btn-borde: var(--color-borde-fuerte);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: 2.75rem; /* 44 px: área táctil cómoda */
+  padding: 0 var(--espacio-5);
+  border: 1px solid var(--btn-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--btn-fondo);
+  color: var(--btn-texto);
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-seminegrita);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--transicion-rapida),
+    border-color var(--transicion-rapida),
+    box-shadow var(--transicion-rapida),
+    color var(--transicion-rapida),
+    transform var(--transicion-rapida);
+}
+
+.btn:hover {
+  background-color: var(--btn-fondo-hover);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn svg {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled='true']:hover {
+  background-color: var(--btn-fondo);
+}
+
+/* Estado "cargando": oculta el contenido y muestra un indicador giratorio */
+.btn[aria-busy='true'] {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn[aria-busy='true']::after {
+  content: '';
+  position: absolute;
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid var(--btn-texto);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+/* ---------- Variantes ---------- */
+.btn--primario {
+  --btn-fondo: var(--color-primario);
+  --btn-fondo-hover: var(--color-primario-hover);
+  --btn-texto: var(--color-sobre-primario);
+  --btn-borde: transparent;
+  box-shadow: var(--sombra-sm);
+}
+
+.btn--primario:hover {
+  box-shadow: var(--sombra-primario);
+}
+
+.btn--secundario {
+  --btn-fondo: var(--color-primario-suave);
+  --btn-fondo-hover: var(--color-primario-suave-hover);
+  --btn-texto: var(--color-primario-texto);
+  --btn-borde: var(--color-primario-borde);
+}
+
+.btn--acento {
+  --btn-fondo: var(--color-acento);
+  --btn-fondo-hover: var(--color-acento-hover);
+  --btn-texto: var(--color-sobre-acento);
+  --btn-borde: transparent;
+}
+
+.btn--peligro {
+  --btn-fondo: var(--color-peligro);
+  --btn-fondo-hover: var(--color-peligro-hover);
+  --btn-texto: #ffffff;
+  --btn-borde: transparent;
+}
+
+.btn--fantasma {
+  --btn-fondo: transparent;
+  --btn-fondo-hover: var(--color-superficie-alterna);
+  --btn-texto: var(--color-texto-secundario);
+  --btn-borde: transparent;
+}
+
+.btn--fantasma:hover {
+  color: var(--color-texto);
+}
+
+/* Botón transparente que se tiñe de rojo (p. ej. "eliminar" en tablas) */
+.btn--peligro-fantasma {
+  --btn-fondo: transparent;
+  --btn-fondo-hover: var(--color-peligro-suave);
+  --btn-texto: var(--color-peligro-texto);
+  --btn-borde: transparent;
+}
+
+/* ---------- Tamaños ---------- */
+.btn--pequeno {
+  min-height: 2.25rem;
+  padding: 0 var(--espacio-3);
+  font-size: var(--texto-xs);
+}
+
+.btn--grande {
+  min-height: 3.25rem;
+  padding: 0 var(--espacio-8);
+  border-radius: var(--radio-lg);
+  font-size: var(--texto-base);
+}
+
+/* Botón cuadrado que solo contiene un ícono (debe llevar aria-label) */
+.btn--icono {
+  width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0;
+}
+
+.btn--bloque {
+  width: 100%;
+}
+
+.grupo-botones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+/* ==========================================================================
+   TARJETAS
+   ========================================================================== */
+.tarjeta {
+  padding: var(--espacio-6);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+  box-shadow: var(--sombra-sm);
+}
+
+.tarjeta--interactiva {
+  transition:
+    transform var(--transicion-media),
+    box-shadow var(--transicion-media),
+    border-color var(--transicion-media);
+}
+
+.tarjeta--interactiva:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primario-borde);
+  box-shadow: var(--sombra-lg);
+}
+
+.tarjeta__encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-5);
+}
+
+.tarjeta__titulo {
+  font-size: var(--texto-lg);
+}
+
+.tarjeta__subtitulo {
+  margin-top: var(--espacio-1);
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-sm);
+}
+
+.tarjeta__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-5);
+  padding-top: var(--espacio-4);
+  border-top: 1px solid var(--color-borde);
+}
+
+/* ==========================================================================
+   FORMULARIOS
+   ========================================================================== */
+.formulario {
+  display: grid;
+  gap: var(--espacio-5);
+  container-type: inline-size; /* permite adaptar las filas al ancho del formulario */
+}
+
+/* Dos campos por fila cuando el formulario es suficientemente ancho */
+.formulario__fila {
+  display: grid;
+  gap: var(--espacio-5);
+}
+
+@container (min-width: 440px) {
+  .formulario__fila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.formulario__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--espacio-3);
+  padding-top: var(--espacio-2);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  min-width: 0;
+}
+
+.campo__etiqueta {
+  color: var(--color-texto);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-seminegrita);
+}
+
+.campo__obligatorio {
+  margin-left: 2px;
+  color: var(--color-peligro-texto);
+}
+
+/* Estilo común para input, select y textarea */
+.campo__entrada {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: var(--texto-base); /* 16 px evita el zoom automático en iOS */
+  transition:
+    border-color var(--transicion-rapida),
+    box-shadow var(--transicion-rapida),
+    background-color var(--transicion-rapida);
+}
+
+.campo__entrada::placeholder {
+  color: var(--color-texto-tenue);
+  opacity: 1;
+}
+
+.campo__entrada:hover {
+  border-color: var(--color-texto-tenue);
+}
+
+.campo__entrada:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: var(--anillo-foco);
+}
+
+.campo__entrada[aria-invalid='true'] {
+  border-color: var(--color-peligro);
+}
+
+.campo__entrada[aria-invalid='true']:focus {
+  box-shadow: var(--anillo-foco-error);
+}
+
+.campo__entrada:disabled {
+  background-color: var(--color-superficie-alterna);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+textarea.campo__entrada {
+  min-height: 6rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+select.campo__entrada {
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.1rem;
+  appearance: none;
+  cursor: pointer;
+}
+
+.campo__ayuda {
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+}
+
+.campo__error {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  color: var(--color-peligro-texto);
+  font-size: 0.8125rem;
+  font-weight: var(--peso-medio);
+  animation: deslizar-arriba var(--transicion-media) both;
+}
+
+.campo__error:empty {
+  display: none;
+}
+
+/* Entrada con un botón interno (p. ej. mostrar/ocultar contraseña) */
+.campo__grupo {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.campo__grupo .campo__entrada {
+  padding-right: 3rem;
+}
+
+.campo__boton-interno {
+  position: absolute;
+  right: var(--espacio-1);
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: var(--radio-sm);
+  background: transparent;
+  color: var(--color-texto-tenue);
+  transition:
+    background-color var(--transicion-rapida),
+    color var(--transicion-rapida);
+}
+
+.campo__boton-interno:hover {
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto);
+}
+
+.campo__boton-interno svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* ==========================================================================
+   TABLAS
+   ========================================================================== */
+.tabla-contenedor {
+  overflow-x: auto;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+}
+
+.tabla {
+  font-size: var(--texto-sm);
+}
+
+.tabla th,
+.tabla td {
+  padding: var(--espacio-3) var(--espacio-4);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabla thead th {
+  border-bottom: 1px solid var(--color-borde);
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-seminegrita);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabla tbody tr {
+  border-bottom: 1px solid var(--color-borde);
+  transition: background-color var(--transicion-rapida);
+}
+
+.tabla tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover {
+  background-color: var(--color-superficie-alterna);
+}
+
+.tabla .columna-acciones {
+  width: 1%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabla__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espacio-1);
+}
+
+/* Tabla responsiva: en pantallas pequeñas cada fila se muestra como tarjeta
+   y cada celda muestra su etiqueta (atributo data-etiqueta). */
+@media (max-width: 720px) {
+  .tabla--responsiva thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .tabla--responsiva,
+  .tabla--responsiva tbody,
+  .tabla--responsiva tr,
+  .tabla--responsiva td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla--responsiva tr {
+    padding: var(--espacio-3) var(--espacio-4);
+  }
+
+  .tabla--responsiva td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-4);
+    padding: var(--espacio-2) 0;
+    text-align: right;
+  }
+
+  .tabla--responsiva td::before {
+    content: attr(data-etiqueta);
+    color: var(--color-texto-secundario);
+    font-weight: var(--peso-seminegrita);
+    text-align: left;
+  }
+
+  .tabla--responsiva .columna-acciones {
+    width: 100%;
+    padding-top: var(--espacio-3);
+  }
+
+  .tabla--responsiva td.columna-acciones::before {
+    content: none;
+  }
+
+  .tabla--responsiva .tabla__acciones {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   INSIGNIAS (badges)
+   ========================================================================== */
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-completo);
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-seminegrita);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.insignia svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.insignia--primario {
+  border-color: var(--color-primario-borde);
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+}
+
+.insignia--acento {
+  border-color: var(--color-acento-borde);
+  background-color: var(--color-acento-suave);
+  color: var(--color-acento-texto);
+}
+
+.insignia--exito {
+  border-color: var(--color-exito-borde);
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito-texto);
+}
+
+.insignia--peligro {
+  border-color: var(--color-peligro-borde);
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro-texto);
+}
+
+/* ==========================================================================
+   ALERTAS
+   ========================================================================== */
+.alerta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid;
+  border-radius: var(--radio-md);
+  font-size: var(--texto-sm);
+}
+
+.alerta svg {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.1rem;
+}
+
+.alerta--info {
+  border-color: var(--color-info-borde);
+  background-color: var(--color-info-suave);
+  color: var(--color-info-texto);
+}
+
+.alerta--exito {
+  border-color: var(--color-exito-borde);
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito-texto);
+}
+
+.alerta--advertencia {
+  border-color: var(--color-advertencia-borde);
+  background-color: var(--color-advertencia-suave);
+  color: var(--color-advertencia-texto);
+}
+
+.alerta--peligro {
+  border-color: var(--color-peligro-borde);
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro-texto);
+}
+
+/* ==========================================================================
+   DIÁLOGOS (elemento nativo <dialog>)
+   ========================================================================== */
+.dialogo {
+  width: min(100% - 2 * var(--espacio-4), 32rem);
+  max-height: calc(100dvh - 2 * var(--espacio-4));
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-xl);
+  background-color: var(--color-superficie-elevada);
+  color: var(--color-texto);
+  box-shadow: var(--sombra-lg);
+  overflow: auto;
+}
+
+.dialogo[open] {
+  animation: escalar-entrada var(--transicion-media) both;
+}
+
+/* Colores fijos: ::backdrop no hereda variables en navegadores antiguos */
+.dialogo::backdrop {
+  background-color: rgba(15, 23, 42, 0.55);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: aparecer var(--transicion-media) both;
+}
+
+.dialogo__contenido {
+  padding: var(--espacio-6);
+}
+
+.dialogo__titulo {
+  font-size: var(--texto-xl);
+}
+
+.dialogo__mensaje {
+  margin-top: var(--espacio-2);
+  color: var(--color-texto-secundario);
+}
+
+.dialogo__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-6);
+}
+
+/* ==========================================================================
+   OTROS ELEMENTOS
+   ========================================================================== */
+
+/* Círculo con las iniciales de una persona */
+.avatar {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--degradado-marca);
+  color: #ffffff;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-negrita);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Etiqueta para códigos (p. ej. el código de un examen) */
+.codigo {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie-alterna);
+  font-family: var(--fuente-mono);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* Indicador de carga */
+.spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 3px solid var(--color-primario-borde);
+  border-top-color: var(--color-primario);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+.separador {
+  margin-block: var(--espacio-6);
+  border: 0;
+  border-top: 1px solid var(--color-borde);
+}
