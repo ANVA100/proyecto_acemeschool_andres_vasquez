@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 4 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 5 de 10**
 
 ---
 
@@ -17,7 +17,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 2 | Modelo de datos en JSON, persistencia con `localStorage` y datos iniciales | ✅ |
 | 3 | Enrutador SPA y Web Components compartidos (encabezado, notificaciones, diálogos, modo oscuro) | ✅ |
 | 4 | Login y protección de las rutas privadas | ✅ |
-| 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ⏳ |
+| 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ✅ |
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ⏳ |
 | 7 | Preguntas y respuestas de cada examen | ⏳ |
 | 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ⏳ |
@@ -80,7 +80,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │   ├── animaciones.css     # Keyframes y soporte de movimiento reducido
 │   └── vistas/
 │       ├── generales.css   # Carga inicial, página 404 y vista "en construcción"
-│       └── login.css       # Vista de inicio de sesión
+│       ├── login.css       # Vista de inicio de sesión
+│       └── admin.css       # Estructura común de los módulos privados (formulario + tabla)
 └── js/
     ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
     ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
@@ -93,7 +94,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     │   ├── almacenamiento.js   # Único módulo que lee/escribe localStorage (JSON)
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
     │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
-    │   └── servicio-tema.js    # Modo claro / oscuro
+    │   ├── servicio-tema.js    # Modo claro / oscuro
+    │   └── servicio-usuarios.js       # Reglas de negocio de usuarios (validación, únicos, cifrado)
     ├── utilidades/
     │   ├── cifrado.js          # Hash SHA-256 + sal para las contraseñas (Web Crypto API)
     │   ├── dom.js              # escaparHTML(): evita inyección de código (XSS)
@@ -105,6 +107,10 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     └── componentes/
         ├── autenticacion/
         │   └── vista-login.js
+        ├── usuarios/
+        │   ├── vista-usuarios.js       # Orquesta formulario + tabla + buscador
+        │   ├── formulario-usuario.js   # Crear / editar (emite "guardar-usuario")
+        │   └── tabla-usuarios.js       # Lista (emite "editar-usuario" / "eliminar-usuario")
         ├── compartidos/        # Web Components reutilizables en toda la app
         │   ├── encabezado-app.js
         │   ├── contenedor-notificaciones.js
@@ -169,6 +175,28 @@ Cualquier otra ruta muestra la página 404.
   - La app revisa cada 30 segundos si expiró y, en ese caso, avisa y vuelve al login.
   - Si se inicia o cierra sesión en otra pestaña, todas se sincronizan (evento `storage`).
 - **Encabezado**: con sesión muestra los módulos privados, el avatar con el nombre y cargo del usuario y el botón **Cerrar sesión**.
+
+---
+
+## 👥 Gestión de usuarios (`#/admin/usuarios`)
+
+La vista tiene un **formulario** (crear / actualizar), una **tabla** con los usuarios registrados y **botones para editar y eliminar** cada registro.
+
+| Campo | Reglas |
+|-------|--------|
+| Número de identificación | Obligatorio, solo dígitos (5 a 15), **único** |
+| Nombre completo | Obligatorio, 3 a 80 caracteres, solo letras y espacios |
+| Email | Obligatorio, formato válido, **único** (sin distinguir mayúsculas) |
+| Teléfono | Obligatorio, solo dígitos (7 a 15) |
+| Cargo | Obligatorio: *Administrativo* o *Docente* |
+| Contraseña | Al crear: obligatoria, mínimo 8 caracteres con letras y números. Al editar: si se deja vacía, se conserva la actual |
+
+- **Arquitectura por eventos**: `<formulario-usuario>` y `<tabla-usuarios>` no guardan nada. Emiten eventos (`guardar-usuario`, `editar-usuario`, `eliminar-usuario`) y `<vista-usuarios>` los conecta con el servicio.
+- **Validación en dos capas**: el formulario valida antes de enviar. El servicio vuelve a validar y además comprueba que la identificación y el correo no estén repetidos.
+- **Eliminar** pide confirmación con `<dialogo-confirmacion>`. **No se puede eliminar la propia cuenta** con la que se inició sesión (marcada con "Tú").
+- Si el usuario se edita a sí mismo, el encabezado se actualiza al instante.
+- **Buscador**: filtra por nombre, correo, identificación, teléfono o cargo, sin importar mayúsculas ni tildes ("gomez" encuentra "Gómez").
+- En el celular la tabla se transforma en tarjetas.
 
 ---
 

@@ -100,6 +100,25 @@ export function estaAutenticado() {
   return obtenerSesion() !== null;
 }
 
+/**
+ * Si el usuario editado es el de la sesión, actualiza su nombre, correo y
+ * cargo en la sesión (así el encabezado muestra los datos nuevos).
+ * @param {object} usuario - Usuario ya actualizado.
+ */
+export function actualizarDatosSesion(usuario) {
+  const sesion = obtenerSesion();
+  if (!sesion || sesion.usuarioId !== usuario.id) return;
+
+  const sesionActualizada = {
+    ...sesion,
+    nombreCompleto: usuario.nombreCompleto,
+    email: usuario.email,
+    cargo: usuario.cargo,
+  };
+  guardarDatos(CLAVES_ALMACENAMIENTO.SESION, sesionActualizada);
+  emitirCambioSesion(sesionActualizada);
+}
+
 /** Vuelve a emitir el estado actual (p. ej. cuando la sesión cambió en otra pestaña). */
 export function sincronizarSesion() {
   emitirCambioSesion(obtenerSesion());

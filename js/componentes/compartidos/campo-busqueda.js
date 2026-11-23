@@ -24,6 +24,9 @@ plantilla.innerHTML = `
     :host { display: block; }
     *, *::before, *::after { box-sizing: border-box; }
 
+    /* La regla global [hidden] de base.css no entra al Shadow DOM */
+    [hidden] { display: none !important; }
+
     .sr-only {
       position: absolute;
       width: 1px;

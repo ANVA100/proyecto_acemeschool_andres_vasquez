@@ -327,12 +327,20 @@ encabezado-app {
   .rejilla-admin {
     grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
   }
+}
 
-  /* El formulario acompaña el scroll en pantallas grandes */
+/* El formulario acompaña el scroll solo si la pantalla es lo bastante alta
+   para mostrarlo completo (si no, quedaría cortado). */
+@media (min-width: 1024px) and (min-height: 820px) {
   .rejilla-admin__lateral {
     position: sticky;
     top: calc(var(--altura-encabezado) + var(--espacio-6));
   }
+}
+
+/* Margen al desplazarse hasta el formulario (p. ej. al pulsar "Editar") */
+.rejilla-admin__lateral > * {
+  scroll-margin-top: calc(var(--altura-encabezado) + var(--espacio-4));
 }
 
 /* Apila elementos en columna con separación uniforme */
