@@ -9,15 +9,31 @@
  * - En pantallas pequeñas los enlaces se agrupan en un menú desplegable.
  * - Mientras se presenta un examen (modo "examen") oculta la navegación
  *   para que el estudiante no se distraiga.
+ * - Con sesión iniciada muestra los módulos privados, el usuario y el botón
+ *   "Cerrar sesión" (escucha el evento "sesion-cambiada").
  */
+import { NOMBRES_CARGOS } from '../../config/constantes.js';
+import { navegar } from '../../enrutador.js';
+import { cerrarSesion, obtenerSesion } from '../../servicios/servicio-autenticacion.js';
 import { alternarTema, obtenerTema } from '../../servicios/servicio-tema.js';
 import { escaparHTML } from '../../utilidades/dom.js';
+import { obtenerIniciales } from '../../utilidades/formato.js';
 import { icono } from '../../utilidades/iconos.js';
+import { notificar } from './contenedor-notificaciones.js';
 
 /** Enlaces visibles para cualquier visitante. */
 const ENLACES_PUBLICOS = [
   { ruta: '/', texto: 'Exámenes', icono: 'examen' },
   { ruta: '/login', texto: 'Acceso personal', icono: 'entrar' },
+];
+
+/** Enlaces del área privada (solo con sesión iniciada). */
+const ENLACES_PRIVADOS = [
+  { ruta: '/', texto: 'Catálogo', icono: 'birrete' },
+  { ruta: '/admin/examenes', texto: 'Exámenes', icono: 'examen' },
+  { ruta: '/admin/usuarios', texto: 'Usuarios', icono: 'usuarios' },
+  { ruta: '/admin/resultados', texto: 'Resultados', icono: 'grafica' },
+  { ruta: '/admin/respaldo', texto: 'Respaldo', icono: 'respaldo' },
 ];
 
 class EncabezadoApp extends HTMLElement {
@@ -29,6 +45,7 @@ class EncabezadoApp extends HTMLElement {
     this.addEventListener('click', this.#alHacerClic);
     window.addEventListener('ruta-cambiada', this.#alCambiarRuta);
     window.addEventListener('tema-cambiado', this.#actualizarBotonTema);
+    window.addEventListener('sesion-cambiada', this.#alCambiarSesion);
     document.addEventListener('keydown', this.#alPresionarTecla);
     document.addEventListener('click', this.#alHacerClicFuera);
   }
@@ -37,18 +54,31 @@ class EncabezadoApp extends HTMLElement {
     this.removeEventListener('click', this.#alHacerClic);
     window.removeEventListener('ruta-cambiada', this.#alCambiarRuta);
     window.removeEventListener('tema-cambiado', this.#actualizarBotonTema);
+    window.removeEventListener('sesion-cambiada', this.#alCambiarSesion);
     document.removeEventListener('keydown', this.#alPresionarTecla);
     document.removeEventListener('click', this.#alHacerClicFuera);
   }
 
-  /** Enlaces de navegación según el estado de la app. */
-  #obtenerEnlaces() {
-    return ENLACES_PUBLICOS;
+  /** Insignia con el avatar, nombre y cargo del usuario autenticado + botón de salir. */
+  #renderizarUsuario(sesion) {
+    const nombre = escaparHTML(sesion.nombreCompleto);
+    const cargo = escaparHTML(NOMBRES_CARGOS[sesion.cargo] ?? sesion.cargo);
+    return `
+      <div class="usuario-chip" title="${nombre} · ${cargo}">
+        <span class="avatar" aria-hidden="true">${escaparHTML(obtenerIniciales(sesion.nombreCompleto))}</span>
+        <span class="usuario-chip__texto">
+          <span class="usuario-chip__nombre">${nombre}</span>
+          <span class="usuario-chip__cargo">${cargo}</span>
+        </span>
+      </div>
+      <button type="button" class="btn btn--fantasma btn--icono" data-accion="cerrar-sesion"
+        aria-label="Cerrar sesión" title="Cerrar sesión">${icono('salir')}</button>`;
   }
 
   #renderizar() {
     const enModoExamen = this.#modo === 'examen';
-    const enlaces = this.#obtenerEnlaces()
+    const sesion = enModoExamen ? null : obtenerSesion();
+    const enlaces = (sesion ? ENLACES_PRIVADOS : ENLACES_PUBLICOS)
       .map(
         (enlace) => `
           <li>
@@ -78,6 +108,7 @@ class EncabezadoApp extends HTMLElement {
           <div class="encabezado__acciones">
             <button type="button" class="btn btn--fantasma btn--icono" data-accion="alternar-tema"
               aria-label="Modo oscuro" title="Cambiar tema"></button>
+            ${sesion ? this.#renderizarUsuario(sesion) : ''}
             ${
               enModoExamen
                 ? ''
@@ -142,10 +173,21 @@ class EncabezadoApp extends HTMLElement {
     }
   };
 
+  #alCambiarSesion = () => {
+    this.#renderizar();
+  };
+
+  #salir() {
+    cerrarSesion();
+    notificar('Cerraste sesión correctamente.', { tipo: 'info' });
+    navegar('/login');
+  }
+
   #alHacerClic = (evento) => {
     const accion = evento.target.closest('[data-accion]')?.dataset.accion;
     if (accion === 'alternar-tema') alternarTema();
     if (accion === 'alternar-menu') this.#alternarMenu();
+    if (accion === 'cerrar-sesion') this.#salir();
     if (evento.target.closest('.navegacion__enlace')) this.#alternarMenu(false);
   };
 

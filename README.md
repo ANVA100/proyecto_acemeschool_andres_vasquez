@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 3 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 4 de 10**
 
 ---
 
@@ -16,7 +16,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 1 | Estructura base e identidad visual (sistema de diseño, tema claro/oscuro) | ✅ |
 | 2 | Modelo de datos en JSON, persistencia con `localStorage` y datos iniciales | ✅ |
 | 3 | Enrutador SPA y Web Components compartidos (encabezado, notificaciones, diálogos, modo oscuro) | ✅ |
-| 4 | Login y protección de las rutas privadas | ⏳ |
+| 4 | Login y protección de las rutas privadas | ✅ |
 | 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ⏳ |
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ⏳ |
 | 7 | Preguntas y respuestas de cada examen | ⏳ |
@@ -79,7 +79,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │   ├── componentes.css     # Botones, tarjetas, formularios, tablas, insignias, alertas, diálogos
 │   ├── animaciones.css     # Keyframes y soporte de movimiento reducido
 │   └── vistas/
-│       └── generales.css   # Carga inicial, página 404 y vista "en construcción"
+│       ├── generales.css   # Carga inicial, página 404 y vista "en construcción"
+│       └── login.css       # Vista de inicio de sesión
 └── js/
     ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
     ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
@@ -91,13 +92,19 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     ├── servicios/
     │   ├── almacenamiento.js   # Único módulo que lee/escribe localStorage (JSON)
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
+    │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
     │   └── servicio-tema.js    # Modo claro / oscuro
     ├── utilidades/
     │   ├── cifrado.js          # Hash SHA-256 + sal para las contraseñas (Web Crypto API)
     │   ├── dom.js              # escaparHTML(): evita inyección de código (XSS)
+    │   ├── formato.js          # Iniciales, primer nombre...
+    │   ├── formularios.js      # Leer formularios, mostrar errores accesibles, mostrar contraseña
     │   ├── generador-id.js     # Identificadores únicos (UUID v4)
-    │   └── iconos.js           # Íconos SVG en línea
+    │   ├── iconos.js           # Íconos SVG en línea
+    │   └── validaciones.js     # Reglas reutilizables (requerido, email, longitud, rangos...)
     └── componentes/
+        ├── autenticacion/
+        │   └── vista-login.js
         ├── compartidos/        # Web Components reutilizables en toda la app
         │   ├── encabezado-app.js
         │   ├── contenedor-notificaciones.js
@@ -148,6 +155,20 @@ La aplicación es una **SPA**: un solo `index.html`, y el enrutador cambia la vi
 | `#/admin/respaldo` | Exportar / importar datos | Privado |
 
 Cualquier otra ruta muestra la página 404.
+
+---
+
+## 🔐 Autenticación
+
+- **Login** (`#/login`) con correo y contraseña. Primero se valida en el navegador (campos obligatorios y formato del correo). Luego se compara el *hash* de la contraseña escrita con el guardado.
+- Si las credenciales no coinciden, el mensaje es genérico ("Correo o contraseña incorrectos"), para no revelar qué correos existen.
+- **Guardia de rutas**: antes de mostrar una vista privada, el enrutador comprueba la sesión.
+  - **Sin sesión:** envía al login y recuerda la ruta que se quería abrir. Después de iniciar sesión, lleva allí.
+  - **Con sesión:** al visitar `#/login` envía directamente al área administrativa.
+- **Sesión** (`acme_sesion`): guarda solo los datos básicos del usuario (nunca la contraseña) y **expira a las 8 horas**.
+  - La app revisa cada 30 segundos si expiró y, en ese caso, avisa y vuelve al login.
+  - Si se inicia o cierra sesión en otra pestaña, todas se sincronizan (evento `storage`).
+- **Encabezado**: con sesión muestra los módulos privados, el avatar con el nombre y cargo del usuario y el botón **Cerrar sesión**.
 
 ---
 

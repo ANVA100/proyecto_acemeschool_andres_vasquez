@@ -36,6 +36,11 @@ const USUARIOS_INICIALES = [
   },
 ];
 
+/** Credenciales de prueba que el login ofrece para autocompletar. */
+export const CREDENCIALES_DEMO = Object.freeze(
+  USUARIOS_INICIALES.map(({ cargo, email, contrasena }) => Object.freeze({ cargo, email, contrasena }))
+);
+
 /**
  * Exámenes de ejemplo en formato compacto:
  * cada pregunta indica sus opciones y la posición (desde 0) de la correcta.

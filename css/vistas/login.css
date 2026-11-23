@@ -1,0 +1,169 @@
+/* ==========================================================================
+   VISTA LOGIN · Tarjeta dividida: panel de marca + formulario
+   ========================================================================== */
+
+.login {
+  display: grid;
+  max-width: 60rem;
+  margin: var(--espacio-4) auto;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-xl);
+  background-color: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+  overflow: hidden;
+}
+
+@media (min-width: 860px) {
+  .login {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+/* ---------- Panel de marca (degradado índigo) ---------- */
+.login__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--espacio-4);
+  padding: var(--espacio-10);
+  background: var(--degradado-marca);
+  color: #ffffff;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Círculos decorativos */
+.login__panel::before,
+.login__panel::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.login__panel::before {
+  top: -6rem;
+  right: -6rem;
+  width: 16rem;
+  height: 16rem;
+}
+
+.login__panel::after {
+  bottom: -4rem;
+  left: -5rem;
+  width: 12rem;
+  height: 12rem;
+  background-color: rgba(245, 158, 11, 0.22);
+}
+
+.login__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radio-lg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  animation: flotar 4s ease-in-out infinite;
+}
+
+.login__panel-titulo {
+  color: #ffffff;
+  font-size: var(--texto-3xl);
+}
+
+.login__panel-texto {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.login__beneficios {
+  display: grid;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-2);
+}
+
+.login__beneficio {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.login__beneficio-icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radio-md);
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.login__beneficio-icono svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* En pantallas pequeñas el panel se reduce a una franja */
+@media (max-width: 859px) {
+  .login__panel {
+    padding: var(--espacio-6);
+  }
+
+  .login__panel-titulo {
+    font-size: var(--texto-xl);
+  }
+
+  .login__beneficios,
+  .login__panel-texto {
+    display: none;
+  }
+}
+
+/* ---------- Formulario ---------- */
+.login__contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-5);
+  padding: var(--espacio-10) var(--espacio-8);
+}
+
+@media (max-width: 480px) {
+  .login__contenido {
+    padding: var(--espacio-6) var(--espacio-5);
+  }
+}
+
+.login__titulo {
+  font-size: var(--texto-3xl);
+}
+
+.login__subtitulo {
+  margin-top: var(--espacio-1);
+  color: var(--color-texto-secundario);
+}
+
+.login__demo {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  border: 1px dashed var(--color-borde-fuerte);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-sm);
+}
+
+.login__volver {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--espacio-2);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.login__volver svg {
+  width: 1rem;
+  height: 1rem;
+}

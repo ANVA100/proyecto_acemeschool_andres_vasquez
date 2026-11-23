@@ -118,7 +118,57 @@ encabezado-app {
   display: none;
 }
 
-@media (max-width: 767px) {
+/* Usuario autenticado: avatar + nombre + cargo */
+.usuario-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin-left: var(--espacio-2);
+  padding: var(--espacio-1) var(--espacio-3) var(--espacio-1) var(--espacio-1);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-completo);
+  background-color: var(--color-superficie);
+}
+
+.usuario-chip__texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.usuario-chip__nombre {
+  max-width: 11rem;
+  overflow: hidden;
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-seminegrita);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.usuario-chip__cargo {
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+}
+
+/* En pantallas medianas solo se ve el avatar (el texto sigue disponible para lectores) */
+@media (max-width: 1279px) {
+  .usuario-chip {
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .usuario-chip__texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1023px) {
   .encabezado .encabezado__boton-menu {
     display: inline-flex;
   }
