@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 7 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 8 de 10**
 
 ---
 
@@ -20,7 +20,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ✅ |
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ✅ |
 | 7 | Preguntas y respuestas de cada examen | ✅ |
-| 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ⏳ |
+| 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ✅ |
 | 9 | Presentación del examen con temporizador en tiempo real, preguntas en orden aleatorio y resultado | ⏳ |
 | 10 | Panel de resultados, respaldo JSON (exportar/importar) y documentación final | ⏳ |
 
@@ -82,7 +82,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │       ├── generales.css   # Carga inicial, página 404 y vista "en construcción"
 │       ├── login.css       # Vista de inicio de sesión
 │       ├── admin.css       # Estructura común de los módulos privados (formulario + tabla)
-│       └── preguntas.css   # Editor de respuestas y lista de preguntas
+│       ├── preguntas.css   # Editor de respuestas y lista de preguntas
+│       └── catalogo.css    # Catálogo público, pasos y aviso de examen en curso
 └── js/
     ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
     ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
@@ -96,9 +97,11 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
     │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
     │   ├── servicio-examenes.js       # Exámenes y sus preguntas (validación, código único, una sola correcta)
+    │   ├── servicio-intentos.js       # Inicio del examen: datos del estudiante, orden y hora de fin
     │   ├── servicio-tema.js    # Modo claro / oscuro
     │   └── servicio-usuarios.js       # Reglas de negocio de usuarios (validación, únicos, cifrado)
     ├── utilidades/
+    │   ├── aleatorio.js        # mezclarArreglo(): algoritmo de Fisher-Yates
     │   ├── cifrado.js          # Hash SHA-256 + sal para las contraseñas (Web Crypto API)
     │   ├── dom.js              # escaparHTML(): evita inyección de código (XSS)
     │   ├── formato.js          # Iniciales, primer nombre...
@@ -116,6 +119,10 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
         │   ├── vista-preguntas.js      # Preguntas de un examen (#/admin/examenes/:id/preguntas)
         │   ├── formulario-pregunta.js  # Enunciado + respuestas dinámicas (2 a 6) + correcta
         │   └── lista-preguntas.js      # Preguntas numeradas con reordenar, editar y eliminar
+        ├── publico/
+        │   ├── vista-catalogo.js       # Catálogo público (#/): exámenes disponibles
+        │   ├── tarjeta-examen.js       # Tarjeta de un examen (Shadow DOM + atributos)
+        │   └── dialogo-estudiante.js   # Pide identificación y nombre antes de empezar
         ├── usuarios/
         │   ├── vista-usuarios.js       # Orquesta formulario + tabla + buscador
         │   ├── formulario-usuario.js   # Crear / editar (emite "guardar-usuario")
@@ -243,6 +250,34 @@ Dentro de cada examen se crean sus preguntas. Cada pregunta tiene un **enunciado
 - **Reordenar:** botones ↑ ↓ para cambiar el orden en que se presentan (si el examen no mezcla las preguntas). El foco del teclado se mantiene en el botón.
 - La lista muestra la respuesta correcta con fondo verde **y** la etiqueta "Correcta", para no depender solo del color.
 - El resumen superior indica si el examen está **visible en el catálogo**. Al agregar la primera pregunta se avisa que ya quedó disponible para los estudiantes.
+
+---
+
+## 🎓 Módulo público: catálogo e identificación (`#/`)
+
+Este módulo es **público**: el estudiante no inicia sesión.
+
+1. **Catálogo:** muestra los exámenes disponibles (los que tienen al menos una pregunta). Cada `<tarjeta-examen>` muestra el **título**, el **tiempo para resolverlo** y el **porcentaje para aprobación**, además del código, la descripción y el número de preguntas. Incluye buscador por título o código.
+2. **Identificación:** al elegir un examen, `<dialogo-estudiante>` muestra el resumen y las instrucciones. Luego pide el **número de identificación** y el **nombre completo**, que son los datos a los que quedan asociadas las respuestas.
+3. **Inicio del intento:** `servicio-intentos.js` guarda el examen en curso en `acme_intento_activo`:
+   - la **hora exacta en que se acaba el tiempo** (`finalizaEn`), así recargar la página no reinicia el reloj;
+   - el **orden de preguntas y respuestas** (sorteado con Fisher-Yates si el examen tiene activada la opción de mezclar), que no cambia al recargar;
+   - las respuestas que va eligiendo el estudiante.
+
+```json
+{
+  "id": "…",
+  "examenId": "…",
+  "estudiante": { "identificacion": "1098765432", "nombreCompleto": "María Fernanda López" },
+  "iniciadoEn": 1795437000000,
+  "finalizaEn": 1795437600000,
+  "ordenPreguntas": ["idPregunta3", "idPregunta1", "…"],
+  "ordenRespuestas": { "idPregunta3": ["idRespuestaB", "idRespuestaD", "…"] },
+  "selecciones": {}
+}
+```
+
+- Solo puede haber **un examen en curso por navegador**. Si existe, el catálogo muestra un aviso con el tiempo restante y el botón **Continuar examen**.
 
 ---
 

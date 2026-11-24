@@ -28,6 +28,7 @@ import './componentes/autenticacion/vista-login.js';
 import './componentes/usuarios/vista-usuarios.js';
 import './componentes/examenes/vista-examenes.js';
 import './componentes/examenes/vista-preguntas.js';
+import './componentes/publico/vista-catalogo.js';
 
 import { notificar } from './componentes/compartidos/contenedor-notificaciones.js';
 import { CLAVES_ALMACENAMIENTO } from './config/constantes.js';

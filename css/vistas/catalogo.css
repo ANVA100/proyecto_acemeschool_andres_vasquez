@@ -1,0 +1,118 @@
+/* ==========================================================================
+   VISTA CATÁLOGO · Módulo público de exámenes
+   ========================================================================== */
+
+/* ---------- Hero con los 3 pasos ---------- */
+.hero--catalogo {
+  padding-bottom: var(--espacio-10);
+}
+
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--espacio-4);
+  max-width: 56rem;
+  margin: var(--espacio-8) auto 0;
+  text-align: left;
+}
+
+.paso {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+  box-shadow: var(--sombra-sm);
+}
+
+.paso__icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radio-md);
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+}
+
+.paso__texto {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--texto-sm);
+  line-height: 1.4;
+}
+
+.paso__texto span {
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-xs);
+}
+
+/* ---------- Barra: título + buscador ---------- */
+.catalogo__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-6);
+}
+
+.catalogo__buscador {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+tarjeta-examen {
+  height: 100%;
+}
+
+/* El mensaje de "vacío" ocupa todo el ancho de la rejilla */
+.rejilla-tarjetas__vacio {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--color-borde-fuerte);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+}
+
+/* ---------- Aviso de examen en curso ---------- */
+.aviso-intento {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-8);
+  padding: var(--espacio-4) var(--espacio-5);
+  border: 1px solid var(--color-acento-borde);
+  border-left: 5px solid var(--color-acento);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-acento-suave);
+  box-shadow: var(--sombra-md);
+}
+
+.aviso-intento__icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background-color: var(--color-acento);
+  color: var(--color-sobre-acento);
+  animation: pulso 2s ease-in-out infinite;
+}
+
+.aviso-intento__texto {
+  display: flex;
+  flex: 1 1 16rem;
+  flex-direction: column;
+  color: var(--color-acento-texto);
+  font-size: var(--texto-sm);
+}
+
+.aviso-intento__texto strong {
+  color: var(--color-texto);
+  font-size: var(--texto-base);
+}
