@@ -3,14 +3,18 @@
  * ---------------------------------------------------------------------------
  * Datos de un examen: código, título, tiempo (minutos), porcentaje de
  * aprobación, descripción y la opción "mezclarPreguntas" (orden aleatorio).
- * Cada examen guarda además su arreglo de preguntas (se gestionan en la parte 7).
+ * Cada examen guarda además su arreglo de preguntas, y cada pregunta su
+ * arreglo de respuestas ({ descripcion, esCorrecta }).
  *
  * Reglas:
  *  - Todos los campos son obligatorios y tienen límites (config/constantes.js).
  *  - El código es ÚNICO y se guarda en mayúsculas (p. ej. "MAT-101").
  *  - Al editar los datos generales, las preguntas del examen se conservan.
+ *  - Cada pregunta tiene entre 2 y 6 respuestas, sin repetir, y SOLO UNA correcta.
  */
 import { CLAVES_ALMACENAMIENTO, LIMITES } from '../config/constantes.js';
+import { normalizarTexto, obtenerLetra } from '../utilidades/formato.js';
+import { generarId } from '../utilidades/generador-id.js';
 import { ErrorValidacion, reglas, validar } from '../utilidades/validaciones.js';
 import { crearColeccion } from './coleccion.js';
 
@@ -131,4 +135,157 @@ export function eliminarExamen(id) {
   if (!examenes.eliminar(id)) {
     throw new Error('El examen que intentas eliminar ya no existe.');
   }
+}
+
+/* ==========================================================================
+   PREGUNTAS Y RESPUESTAS
+   Las preguntas viven dentro de su examen: cada operación lee el examen,
+   modifica su arreglo "preguntas" y lo guarda de nuevo.
+   ========================================================================== */
+
+/** Primer mensaje de error de una lista de reglas (o '' si todas se cumplen). */
+function primerError(valor, listaReglas) {
+  return listaReglas.map((regla) => regla(valor)).find(Boolean) ?? '';
+}
+
+/** Limpia los textos de una pregunta antes de validarla. */
+function normalizarPregunta({ enunciado, respuestas }) {
+  return {
+    enunciado: String(enunciado ?? '').trim(),
+    respuestas: (Array.isArray(respuestas) ? respuestas : []).map((respuesta) => ({
+      id: respuesta.id || null,
+      descripcion: String(respuesta.descripcion ?? '').trim(),
+      esCorrecta: Boolean(respuesta.esCorrecta),
+    })),
+  };
+}
+
+/**
+ * Valida una pregunta. La usan el formulario (antes de enviar) y el servicio.
+ * Claves de error posibles:
+ *  - "enunciado"
+ *  - "respuesta-0", "respuesta-1"... (texto de cada respuesta)
+ *  - "respuestas" (cantidad incorrecta) y "correcta" (ninguna o varias correctas)
+ * @param {{enunciado: string, respuestas: {descripcion: string, esCorrecta: boolean}[]}} pregunta
+ * @returns {{esValido: boolean, errores: Record<string, string>}}
+ */
+export function validarPregunta(pregunta) {
+  const { ENUNCIADO, DESCRIPCION_RESPUESTA, RESPUESTAS_POR_PREGUNTA } = LIMITES;
+  const { enunciado, respuestas } = normalizarPregunta(pregunta);
+  const errores = {};
+
+  const errorEnunciado = primerError(enunciado, [
+    reglas.requerido('Escribe el enunciado de la pregunta.'),
+    reglas.longitud(ENUNCIADO.MIN, ENUNCIADO.MAX),
+  ]);
+  if (errorEnunciado) errores.enunciado = errorEnunciado;
+
+  if (respuestas.length < RESPUESTAS_POR_PREGUNTA.MIN || respuestas.length > RESPUESTAS_POR_PREGUNTA.MAX) {
+    errores.respuestas = `La pregunta debe tener entre ${RESPUESTAS_POR_PREGUNTA.MIN} y ${RESPUESTAS_POR_PREGUNTA.MAX} respuestas.`;
+  }
+
+  // Texto de cada respuesta: obligatorio y sin repetir (sin importar mayúsculas ni tildes)
+  const textosVistos = new Map();
+  respuestas.forEach((respuesta, indice) => {
+    const clave = `respuesta-${indice}`;
+    const error = primerError(respuesta.descripcion, [
+      reglas.requerido('Escribe el texto de esta respuesta.'),
+      reglas.longitud(DESCRIPCION_RESPUESTA.MIN, DESCRIPCION_RESPUESTA.MAX),
+    ]);
+    if (error) {
+      errores[clave] = error;
+      return;
+    }
+    const textoNormalizado = normalizarTexto(respuesta.descripcion);
+    if (textosVistos.has(textoNormalizado)) {
+      errores[clave] = `Es igual a la respuesta ${obtenerLetra(textosVistos.get(textoNormalizado))}.`;
+    } else {
+      textosVistos.set(textoNormalizado, indice);
+    }
+  });
+
+  // Exactamente una respuesta correcta
+  const cantidadCorrectas = respuestas.filter((respuesta) => respuesta.esCorrecta).length;
+  if (cantidadCorrectas === 0) {
+    errores.correcta = 'Marca cuál es la respuesta correcta.';
+  } else if (cantidadCorrectas > 1) {
+    errores.correcta = 'Solo puede haber una respuesta correcta.';
+  }
+
+  return { esValido: Object.keys(errores).length === 0, errores };
+}
+
+/** Examen que debe existir para operar con sus preguntas. */
+function obtenerExamenObligatorio(examenId) {
+  const examen = examenes.obtenerPorId(examenId);
+  if (!examen) throw new Error('El examen ya no existe.');
+  return examen;
+}
+
+/** Valida y arma una pregunta lista para guardar (asigna ids nuevos donde falten). */
+function construirPregunta(datos, idPregunta = null) {
+  const pregunta = normalizarPregunta(datos);
+  const { esValido, errores } = validarPregunta(pregunta);
+  if (!esValido) throw new ErrorValidacion(errores);
+
+  return {
+    id: idPregunta ?? generarId(),
+    enunciado: pregunta.enunciado,
+    respuestas: pregunta.respuestas.map((respuesta) => ({ ...respuesta, id: respuesta.id ?? generarId() })),
+  };
+}
+
+/**
+ * Agrega una pregunta al final del examen.
+ * @param {string} examenId
+ * @param {{enunciado: string, respuestas: object[]}} datos
+ * @returns {object} La pregunta creada.
+ * @throws {ErrorValidacion}
+ */
+export function agregarPregunta(examenId, datos) {
+  const examen = obtenerExamenObligatorio(examenId);
+  const pregunta = construirPregunta(datos);
+  examenes.actualizar(examenId, { preguntas: [...examen.preguntas, pregunta] });
+  return pregunta;
+}
+
+/**
+ * Reemplaza el enunciado y las respuestas de una pregunta existente.
+ * @returns {object} La pregunta actualizada.
+ */
+export function actualizarPregunta(examenId, preguntaId, datos) {
+  const examen = obtenerExamenObligatorio(examenId);
+  const indice = examen.preguntas.findIndex((pregunta) => pregunta.id === preguntaId);
+  if (indice === -1) throw new Error('La pregunta que intentas editar ya no existe.');
+
+  const pregunta = construirPregunta(datos, preguntaId);
+  const preguntas = examen.preguntas.map((actual, posicion) => (posicion === indice ? pregunta : actual));
+  examenes.actualizar(examenId, { preguntas });
+  return pregunta;
+}
+
+/** Elimina una pregunta del examen. */
+export function eliminarPregunta(examenId, preguntaId) {
+  const examen = obtenerExamenObligatorio(examenId);
+  const preguntas = examen.preguntas.filter((pregunta) => pregunta.id !== preguntaId);
+  if (preguntas.length === examen.preguntas.length) {
+    throw new Error('La pregunta que intentas eliminar ya no existe.');
+  }
+  examenes.actualizar(examenId, { preguntas });
+}
+
+/**
+ * Cambia la posición de una pregunta (el orden en que se muestra si el
+ * examen no mezcla las preguntas).
+ * @param {number} desplazamiento - -1 para subir, +1 para bajar.
+ */
+export function moverPregunta(examenId, preguntaId, desplazamiento) {
+  const examen = obtenerExamenObligatorio(examenId);
+  const origen = examen.preguntas.findIndex((pregunta) => pregunta.id === preguntaId);
+  const destino = origen + desplazamiento;
+  if (origen === -1 || destino < 0 || destino >= examen.preguntas.length) return;
+
+  const preguntas = [...examen.preguntas];
+  [preguntas[origen], preguntas[destino]] = [preguntas[destino], preguntas[origen]];
+  examenes.actualizar(examenId, { preguntas });
 }

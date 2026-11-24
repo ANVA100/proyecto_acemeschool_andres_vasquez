@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 6 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 7 de 10**
 
 ---
 
@@ -19,7 +19,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 4 | Login y protección de las rutas privadas | ✅ |
 | 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ✅ |
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ✅ |
-| 7 | Preguntas y respuestas de cada examen | ⏳ |
+| 7 | Preguntas y respuestas de cada examen | ✅ |
 | 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ⏳ |
 | 9 | Presentación del examen con temporizador en tiempo real, preguntas en orden aleatorio y resultado | ⏳ |
 | 10 | Panel de resultados, respaldo JSON (exportar/importar) y documentación final | ⏳ |
@@ -81,7 +81,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │   └── vistas/
 │       ├── generales.css   # Carga inicial, página 404 y vista "en construcción"
 │       ├── login.css       # Vista de inicio de sesión
-│       └── admin.css       # Estructura común de los módulos privados (formulario + tabla)
+│       ├── admin.css       # Estructura común de los módulos privados (formulario + tabla)
+│       └── preguntas.css   # Editor de respuestas y lista de preguntas
 └── js/
     ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
     ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
@@ -94,7 +95,7 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     │   ├── almacenamiento.js   # Único módulo que lee/escribe localStorage (JSON)
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
     │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
-    │   ├── servicio-examenes.js       # Reglas de negocio de exámenes (validación, código único)
+    │   ├── servicio-examenes.js       # Exámenes y sus preguntas (validación, código único, una sola correcta)
     │   ├── servicio-tema.js    # Modo claro / oscuro
     │   └── servicio-usuarios.js       # Reglas de negocio de usuarios (validación, únicos, cifrado)
     ├── utilidades/
@@ -111,7 +112,10 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
         ├── examenes/
         │   ├── vista-examenes.js       # Orquesta formulario + tabla + buscador
         │   ├── formulario-examen.js    # Crear / editar (emite "guardar-examen")
-        │   └── tabla-examenes.js       # Lista con acceso a las preguntas de cada examen
+        │   ├── tabla-examenes.js       # Lista con acceso a las preguntas de cada examen
+        │   ├── vista-preguntas.js      # Preguntas de un examen (#/admin/examenes/:id/preguntas)
+        │   ├── formulario-pregunta.js  # Enunciado + respuestas dinámicas (2 a 6) + correcta
+        │   └── lista-preguntas.js      # Preguntas numeradas con reordenar, editar y eliminar
         ├── usuarios/
         │   ├── vista-usuarios.js       # Orquesta formulario + tabla + buscador
         │   ├── formulario-usuario.js   # Crear / editar (emite "guardar-usuario")
@@ -222,6 +226,23 @@ Misma estructura que usuarios: **formulario** (crear / actualizar), **tabla** de
 - Al editar los datos generales, las preguntas del examen se conservan.
 - Al eliminar un examen se avisa cuántas preguntas se borrarán. Los resultados ya registrados se conservan.
 - El buscador filtra por código, título o descripción.
+
+---
+
+## ❓ Preguntas y respuestas (`#/admin/examenes/:id/preguntas`)
+
+Dentro de cada examen se crean sus preguntas. Cada pregunta tiene un **enunciado** y varias **respuestas**, cada una con su **descripción** y un campo que indica si es la **correcta**.
+
+- **Selección única:** la respuesta correcta se marca tocando su letra (A, B, C…). Son botones de opción (`radio`) con el mismo `name`, por eso el navegador solo permite marcar **una**. El servicio lo vuelve a comprobar al guardar.
+- **Respuestas dinámicas:** se pueden agregar o quitar entre **2 y 6**. Lo ya escrito se conserva al agregar o quitar filas.
+- **Validaciones:**
+  - enunciado obligatorio (5 a 300 caracteres);
+  - cada respuesta con texto;
+  - **sin respuestas repetidas** (sin importar mayúsculas ni tildes);
+  - exactamente **una correcta**.
+- **Reordenar:** botones ↑ ↓ para cambiar el orden en que se presentan (si el examen no mezcla las preguntas). El foco del teclado se mantiene en el botón.
+- La lista muestra la respuesta correcta con fondo verde **y** la etiqueta "Correcta", para no depender solo del color.
+- El resumen superior indica si el examen está **visible en el catálogo**. Al agregar la primera pregunta se avisa que ya quedó disponible para los estudiantes.
 
 ---
 

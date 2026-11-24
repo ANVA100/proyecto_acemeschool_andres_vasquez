@@ -30,6 +30,8 @@ const TRAZOS = Object.freeze({
   examen:
     '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
   exito: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>',
+  'flecha-abajo': '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+  'flecha-arriba': '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
   'flecha-derecha': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
   'flecha-izquierda': '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
   grafica: '<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',

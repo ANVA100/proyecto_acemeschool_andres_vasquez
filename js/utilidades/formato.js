@@ -40,6 +40,15 @@ export function normalizarTexto(texto) {
 }
 
 /**
+ * Letra de una opción según su posición: 0 → "A", 1 → "B", 2 → "C"...
+ * @param {number} indice
+ * @returns {string}
+ */
+export function obtenerLetra(indice) {
+  return String.fromCharCode(65 + indice);
+}
+
+/**
  * Cantidad con la palabra en singular o plural.
  * pluralizar(1, 'usuario') → "1 usuario" · pluralizar(3, 'usuario') → "3 usuarios"
  * @param {number} cantidad
