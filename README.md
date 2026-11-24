@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 8 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 9 de 10**
 
 ---
 
@@ -21,7 +21,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ✅ |
 | 7 | Preguntas y respuestas de cada examen | ✅ |
 | 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ✅ |
-| 9 | Presentación del examen con temporizador en tiempo real, preguntas en orden aleatorio y resultado | ⏳ |
+| 9 | Presentación del examen con temporizador en tiempo real, preguntas en orden aleatorio y resultado | ✅ |
 | 10 | Panel de resultados, respaldo JSON (exportar/importar) y documentación final | ⏳ |
 
 ---
@@ -83,7 +83,8 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
 │       ├── login.css       # Vista de inicio de sesión
 │       ├── admin.css       # Estructura común de los módulos privados (formulario + tabla)
 │       ├── preguntas.css   # Editor de respuestas y lista de preguntas
-│       └── catalogo.css    # Catálogo público, pasos y aviso de examen en curso
+│       ├── catalogo.css    # Catálogo público, pasos y aviso de examen en curso
+│       └── examen.css      # Presentación del examen, barra con reloj y resultado
 └── js/
     ├── main.js             # Punto de entrada: registra componentes, prepara datos y arranca el enrutador
     ├── enrutador.js        # Navegación SPA por hash (#/ruta), parámetros y guardias
@@ -97,7 +98,7 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
     │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
     │   ├── servicio-examenes.js       # Exámenes y sus preguntas (validación, código único, una sola correcta)
-    │   ├── servicio-intentos.js       # Inicio del examen: datos del estudiante, orden y hora de fin
+    │   ├── servicio-intentos.js       # Examen en curso, respuestas, calificación e historial
     │   ├── servicio-tema.js    # Modo claro / oscuro
     │   └── servicio-usuarios.js       # Reglas de negocio de usuarios (validación, únicos, cifrado)
     ├── utilidades/
@@ -122,7 +123,10 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
         ├── publico/
         │   ├── vista-catalogo.js       # Catálogo público (#/): exámenes disponibles
         │   ├── tarjeta-examen.js       # Tarjeta de un examen (Shadow DOM + atributos)
-        │   └── dialogo-estudiante.js   # Pide identificación y nombre antes de empezar
+        │   ├── dialogo-estudiante.js   # Pide identificación y nombre antes de empezar
+        │   ├── vista-examen.js         # Presentar el examen (#/examen/:id) y ver el resultado
+        │   ├── temporizador-examen.js  # Reloj en tiempo real (emite "tiempo-agotado")
+        │   └── anillo-progreso.js      # Porcentaje de aciertos como anillo SVG animado
         ├── usuarios/
         │   ├── vista-usuarios.js       # Orquesta formulario + tabla + buscador
         │   ├── formulario-usuario.js   # Crear / editar (emite "guardar-usuario")
@@ -151,6 +155,11 @@ Cada pieza de la interfaz es un **Custom Element** (`class ... extends HTMLEleme
 | `<dialogo-confirmacion>` | Sí | Confirmación accesible basada en `<dialog>`. `await confirmar({...})` devuelve `true` o `false`. |
 | `<campo-busqueda>` | Sí | Buscador para las tablas. Emite el evento `buscar` con *debounce* (espera a que el usuario deje de escribir). |
 | `<estado-vacio>` | Sí | Mensaje amigable cuando una lista está vacía. Tiene atributos `icono`, `titulo` y `mensaje`, y un `<slot>` para acciones. |
+| `<tarjeta-examen>` | Sí | Tarjeta del catálogo: recibe sus datos por **atributos observados** (`observedAttributes`) y emite `seleccionar-examen`. |
+| `<dialogo-estudiante>` | Sí | Pide identificación y nombre. `await pedirDatosEstudiante(examen)`. |
+| `<temporizador-examen>` | Sí | Reloj en tiempo real. Atributos `finaliza-en` y `duracion`; emite `tiempo-agotado`. Se personaliza desde fuera con variables CSS (`--tamano-tiempo`). |
+| `<anillo-progreso>` | Sí | Porcentaje como anillo SVG animado (`valor`, `estado`, `etiqueta`). |
+| Vistas y formularios de cada módulo | No | `<vista-login>`, `<vista-usuarios>`, `<formulario-usuario>`, `<tabla-usuarios>`, `<vista-examenes>`, `<vista-preguntas>`, `<vista-catalogo>`, `<vista-examen>`… |
 | `<vista-no-encontrada>` | No | Página 404. |
 | `<vista-en-construccion>` | No | Se muestra mientras la vista de una ruta todavía no existe. |
 
@@ -278,6 +287,61 @@ Este módulo es **público**: el estudiante no inicia sesión.
 ```
 
 - Solo puede haber **un examen en curso por navegador**. Si existe, el catálogo muestra un aviso con el tiempo restante y el botón **Continuar examen**.
+
+---
+
+## ⏱️ Presentación del examen (`#/examen/:id`)
+
+**Encabezado:** título del examen, **número total de preguntas**, **porcentaje para aprobar** y los datos del estudiante.
+
+**Barra fija** (acompaña el scroll):
+- **`<temporizador-examen>`**: reloj que empieza en los minutos del examen y baja **en tiempo real hasta 00:00**.
+  - Pasa a ámbar cuando queda el 25 % del tiempo y a rojo, con latido, en el último minuto.
+  - Avisa por lector de pantalla cuando quedan 5 minutos, 1 minuto y 10 segundos.
+- Progreso "Respondidas: 3 de 6", con barra y un **mapa de preguntas** para saltar a cualquiera.
+
+**Preguntas:** van **enumeradas** ("Pregunta 1 de 6") con sus posibles respuestas. Cada pregunta usa botones de opción (`radio`) con el mismo `name`, así **solo se puede elegir una respuesta**. Cada elección se guarda al instante.
+
+**Botón "Terminar":**
+- Si quedan preguntas sin responder, avisa cuántas y ofrece "Seguir respondiendo".
+- Si el **tiempo llega a 0**, el examen **se envía automáticamente**. Si el diálogo de confirmación estaba abierto, se cierra.
+
+**Resultado:** muestra el **porcentaje de respuestas acertadas** en un anillo animado y el mensaje de **aprobación o no aprobación** según el porcentaje configurado en el examen. También incluye correctas, incorrectas, sin responder y tiempo empleado.
+
+### Manejo del tiempo (fluido y sin bloqueos)
+- El reloj **no descuenta segundos**. En cada actualización recalcula `finalizaEn − Date.now()`. Así nunca se desfasa, aunque el navegador esté ocupado o la pestaña en segundo plano.
+- Como `finalizaEn` está guardado, **recargar la página no reinicia el tiempo** y las respuestas elegidas se conservan.
+- Si el estudiante cierra la página y el tiempo se acaba, el examen se califica automáticamente la próxima vez que se abre la aplicación.
+
+### Calificación
+- `porcentaje = correctas / total × 100`. Las preguntas sin responder cuentan como incorrectas.
+- **Aprueba** si el porcentaje es **mayor o igual** al del examen. La comparación se hace con enteros (`correctas × 100 ≥ porcentaje × total`), porque en JavaScript `29 / 50 * 100` da `57.99999999999999`.
+
+Cada resultado se guarda en `acme_intentos`, asociado a la identificación y el nombre del estudiante:
+
+```json
+{
+  "id": "…",
+  "examenId": "…",
+  "examen": { "codigo": "CG-001", "titulo": "Cultura general", "tiempoMinutos": 5, "porcentajeAprobacion": 70 },
+  "estudiante": { "identificacion": "1098765432", "nombreCompleto": "María Fernanda López" },
+  "respuestas": [
+    { "preguntaId": "…", "enunciado": "¿Cuál es la capital de Colombia?", "respuestaId": "…",
+      "respuestaElegida": "Bogotá", "respuestaCorrecta": "Bogotá", "esCorrecta": true }
+  ],
+  "totalPreguntas": 5,
+  "respuestasCorrectas": 4,
+  "sinResponder": 0,
+  "porcentajeObtenido": 80,
+  "aprobado": true,
+  "motivoFinalizacion": "estudiante",
+  "iniciadoEn": "2026-11-24T15:00:00.000Z",
+  "finalizadoEn": "2026-11-24T15:03:41.000Z",
+  "duracionSegundos": 221
+}
+```
+
+El resultado guarda una **copia** de los datos del examen y de cada respuesta. Así el historial sigue siendo válido aunque el examen se edite o se elimine después.
 
 ---
 

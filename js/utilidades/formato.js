@@ -49,6 +49,53 @@ export function obtenerLetra(indice) {
 }
 
 /**
+ * Formato de reloj: 600 → "10:00", 65 → "01:05", 3725 → "1:02:05".
+ * @param {number} segundos
+ * @returns {string}
+ */
+export function formatearReloj(segundos) {
+  const total = Math.max(0, Math.floor(segundos));
+  const horas = Math.floor(total / 3600);
+  const minutos = Math.floor((total % 3600) / 60);
+  const resto = total % 60;
+  const dosDigitos = (numero) => String(numero).padStart(2, '0');
+  return horas > 0
+    ? `${horas}:${dosDigitos(minutos)}:${dosDigitos(resto)}`
+    : `${dosDigitos(minutos)}:${dosDigitos(resto)}`;
+}
+
+/**
+ * Duración legible: 252 → "4 min 12 s", 45 → "45 s", 600 → "10 min".
+ * @param {number} segundos
+ * @returns {string}
+ */
+export function formatearDuracion(segundos) {
+  const total = Math.max(0, Math.round(segundos));
+  const minutos = Math.floor(total / 60);
+  const resto = total % 60;
+  if (minutos === 0) return `${resto} s`;
+  return resto === 0 ? `${minutos} min` : `${minutos} min ${resto} s`;
+}
+
+/**
+ * Porcentaje con máximo un decimal y coma decimal: 66.666 → "66,7 %".
+ * @param {number} valor
+ * @returns {string}
+ */
+export function formatearPorcentaje(valor) {
+  return `${new Intl.NumberFormat('es-CO', { maximumFractionDigits: 1 }).format(valor)} %`;
+}
+
+/**
+ * Fecha y hora legibles: "24 nov 2026, 10:35 a. m."
+ * @param {string|number|Date} fecha
+ * @returns {string}
+ */
+export function formatearFechaHora(fecha) {
+  return new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(fecha));
+}
+
+/**
  * Cantidad con la palabra en singular o plural.
  * pluralizar(1, 'usuario') → "1 usuario" · pluralizar(3, 'usuario') → "3 usuarios"
  * @param {number} cantidad

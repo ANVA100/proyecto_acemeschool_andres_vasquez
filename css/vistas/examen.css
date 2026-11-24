@@ -1,0 +1,479 @@
+/* ==========================================================================
+   VISTA EXAMEN · Presentación del examen y pantalla de resultado
+   ========================================================================== */
+
+temporizador-examen,
+anillo-progreso {
+  flex-shrink: 0;
+}
+
+.examen,
+.resultado {
+  max-width: 54rem;
+  margin-inline: auto;
+}
+
+/* ---------- Encabezado: título, total de preguntas y % para aprobar ---------- */
+.examen__cabecera {
+  display: grid;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-4);
+}
+
+.examen__identidad {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-2);
+}
+
+.examen__titulo {
+  font-size: var(--texto-3xl);
+}
+
+.examen__datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.examen__datos li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-2) var(--espacio-3);
+  border-radius: var(--radio-completo);
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-sm);
+}
+
+.examen__datos svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-primario-texto);
+}
+
+.examen__datos strong {
+  color: var(--color-texto);
+}
+
+/* ---------- Barra fija: reloj + progreso ---------- */
+.examen__barra {
+  position: sticky;
+  top: calc(var(--altura-encabezado) + var(--espacio-2));
+  z-index: 50;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-6);
+  padding: var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-xl);
+  background-color: var(--color-encabezado);
+  box-shadow: var(--sombra-md);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+}
+
+.examen__progreso {
+  display: grid;
+  gap: var(--espacio-2);
+  min-width: 0;
+}
+
+.examen__progreso-texto {
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-sm);
+}
+
+.examen__progreso-texto strong {
+  color: var(--color-texto);
+}
+
+.barra-progreso {
+  height: 8px;
+  border-radius: var(--radio-completo);
+  background-color: var(--color-superficie-alterna);
+  overflow: hidden;
+}
+
+.barra-progreso__relleno {
+  display: block;
+  height: 100%;
+  background: var(--degradado-marca);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transicion-lenta);
+}
+
+/* Mapa: un botón por pregunta para saltar a ella.
+   min-width: 0 → en un grid, los hijos no pueden ser más anchos que su columna
+   (sin esto, en el celular la fila de botones empujaba la página hacia la derecha). */
+.mapa-preguntas {
+  min-width: 0;
+}
+
+.mapa-preguntas ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.mapa-preguntas__boton {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-seminegrita);
+  transition:
+    background-color var(--transicion-rapida),
+    color var(--transicion-rapida),
+    border-color var(--transicion-rapida);
+}
+
+.mapa-preguntas__boton:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario-texto);
+}
+
+.mapa-preguntas__boton--respondida {
+  border-color: transparent;
+  background-color: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.mapa-preguntas__boton--respondida:hover {
+  color: var(--color-sobre-primario);
+}
+
+/* En el celular el reloj se compacta y el mapa se desplaza en horizontal */
+@media (max-width: 560px) {
+  .examen__barra {
+    gap: var(--espacio-3);
+    padding: var(--espacio-2);
+    border-radius: var(--radio-lg);
+  }
+
+  temporizador-examen {
+    --tamano-tiempo: 1.35rem;
+    --ancho-temporizador: 7.5rem;
+  }
+
+  .mapa-preguntas ol {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .mapa-preguntas__boton {
+    flex-shrink: 0;
+  }
+}
+
+/* ---------- Preguntas ---------- */
+.examen__formulario {
+  display: grid;
+  gap: var(--espacio-5);
+}
+
+.pregunta-examen {
+  min-width: 0;
+  margin: 0;
+  padding: var(--espacio-6);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+  box-shadow: var(--sombra-sm);
+  /* Al saltar a una pregunta, que no quede tapada por las barras fijas */
+  scroll-margin-top: calc(var(--altura-encabezado) + 11rem);
+}
+
+/* float + width 100%: el <legend> se comporta como un título normal dentro de la tarjeta */
+.pregunta-examen__enunciado {
+  float: left;
+  width: 100%;
+  margin-bottom: var(--espacio-4);
+  padding: 0;
+}
+
+.pregunta-examen__enunciado + * {
+  clear: both;
+}
+
+.pregunta-examen__numero {
+  display: block;
+  margin-bottom: var(--espacio-1);
+  color: var(--color-primario-texto);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-negrita);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pregunta-examen__texto {
+  display: block;
+  color: var(--color-texto);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.opciones {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+/* Cada respuesta es una tarjeta clicable que contiene su radio */
+.opcion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie);
+  cursor: pointer;
+  transition:
+    border-color var(--transicion-rapida),
+    background-color var(--transicion-rapida),
+    transform var(--transicion-rapida);
+}
+
+.opcion:hover {
+  border-color: var(--color-primario-borde);
+  background-color: var(--color-primario-suave);
+}
+
+.opcion:active {
+  transform: scale(0.99);
+}
+
+/* El radio real queda invisible pero sigue funcionando con teclado y lectores */
+.opcion__entrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.opcion__letra {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 2px solid var(--color-borde-fuerte);
+  border-radius: 50%;
+  color: var(--color-texto-secundario);
+  font-weight: var(--peso-negrita);
+  transition:
+    background-color var(--transicion-rapida),
+    border-color var(--transicion-rapida),
+    color var(--transicion-rapida);
+}
+
+.opcion__texto {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+/* Respuesta elegida */
+.opcion:has(.opcion__entrada:checked) {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+}
+
+.opcion__entrada:checked + .opcion__letra {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* Foco con teclado */
+.opcion:has(.opcion__entrada:focus-visible) {
+  outline: 3px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+.opcion__entrada:focus-visible + .opcion__letra {
+  outline: 2px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+/* ---------- Final del formulario ---------- */
+.examen__final {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-4);
+  text-align: center;
+}
+
+.examen__final p {
+  color: var(--color-texto-secundario);
+}
+
+/* ==========================================================================
+   RESULTADO
+   ========================================================================== */
+.resultado {
+  position: relative;
+  display: grid;
+  gap: var(--espacio-8);
+  padding: var(--espacio-10) var(--espacio-8);
+  overflow: hidden;
+}
+
+/* Franja de color según el resultado */
+.resultado::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 6px;
+  background-color: var(--color-peligro);
+}
+
+.resultado--aprobado::before {
+  background-color: var(--color-exito);
+}
+
+.resultado__principal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-8);
+}
+
+.resultado__texto {
+  display: grid;
+  flex: 1 1 20rem;
+  justify-items: start;
+  gap: var(--espacio-3);
+}
+
+.resultado__insignia {
+  padding: 0.35rem 0.85rem;
+  font-size: var(--texto-sm);
+  animation: escalar-entrada var(--transicion-lenta) 300ms both;
+}
+
+.resultado__titulo {
+  font-size: var(--texto-3xl);
+}
+
+.resultado__mensaje {
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-lg);
+}
+
+.resultado__mensaje strong {
+  color: var(--color-texto);
+}
+
+.resultado__detalles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--espacio-3);
+}
+
+.resultado__dato {
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie-alterna);
+}
+
+.resultado__dato dt {
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-seminegrita);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.resultado__dato dd {
+  margin: 0;
+  color: var(--color-texto);
+  font-weight: var(--peso-seminegrita);
+  overflow-wrap: anywhere;
+}
+
+.resultado__acciones {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 560px) {
+  .resultado {
+    padding: var(--espacio-8) var(--espacio-5);
+  }
+
+  .resultado__texto {
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+/* ---------- Confeti al aprobar ---------- */
+.confeti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confeti span {
+  position: absolute;
+  top: -12px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: caer 2.6s cubic-bezier(0.25, 0.6, 0.4, 1) forwards;
+}
+
+/* Posición, color y retraso distintos para cada pieza */
+.confeti span:nth-child(4n + 1) { background-color: var(--color-primario); }
+.confeti span:nth-child(4n + 2) { background-color: var(--color-acento); }
+.confeti span:nth-child(4n + 3) { background-color: var(--color-exito); }
+.confeti span:nth-child(4n + 4) { background-color: #7c3aed; }
+
+.confeti span:nth-child(1) { left: 5%; animation-delay: 0ms; }
+.confeti span:nth-child(2) { left: 12%; animation-delay: 150ms; }
+.confeti span:nth-child(3) { left: 20%; animation-delay: 60ms; }
+.confeti span:nth-child(4) { left: 28%; animation-delay: 240ms; }
+.confeti span:nth-child(5) { left: 35%; animation-delay: 90ms; }
+.confeti span:nth-child(6) { left: 43%; animation-delay: 300ms; }
+.confeti span:nth-child(7) { left: 50%; animation-delay: 30ms; }
+.confeti span:nth-child(8) { left: 57%; animation-delay: 200ms; }
+.confeti span:nth-child(9) { left: 64%; animation-delay: 120ms; }
+.confeti span:nth-child(10) { left: 71%; animation-delay: 270ms; }
+.confeti span:nth-child(11) { left: 78%; animation-delay: 45ms; }
+.confeti span:nth-child(12) { left: 85%; animation-delay: 180ms; }
+.confeti span:nth-child(13) { left: 91%; animation-delay: 330ms; }
+.confeti span:nth-child(14) { left: 96%; animation-delay: 100ms; }
+
+@keyframes caer {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(420px) rotate(540deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confeti {
+    display: none;
+  }
+}

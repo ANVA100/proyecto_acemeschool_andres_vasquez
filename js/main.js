@@ -29,6 +29,7 @@ import './componentes/usuarios/vista-usuarios.js';
 import './componentes/examenes/vista-examenes.js';
 import './componentes/examenes/vista-preguntas.js';
 import './componentes/publico/vista-catalogo.js';
+import './componentes/publico/vista-examen.js';
 
 import { notificar } from './componentes/compartidos/contenedor-notificaciones.js';
 import { CLAVES_ALMACENAMIENTO } from './config/constantes.js';
@@ -41,6 +42,7 @@ import {
   guardarRutaPendiente,
   sincronizarSesion,
 } from './servicios/servicio-autenticacion.js';
+import { finalizarIntentosVencidos } from './servicios/servicio-intentos.js';
 import { iniciarTema } from './servicios/servicio-tema.js';
 
 /** Cada cuánto se revisa si la sesión expiró. */
@@ -142,6 +144,12 @@ async function iniciarAplicacion() {
   mostrarAnioActual();
   configurarEnlaceSaltarContenido();
   await prepararDatos();
+
+  // Si un estudiante cerró la página y su tiempo ya terminó, su examen se califica ahora
+  const resultadoVencido = finalizarIntentosVencidos();
+  if (resultadoVencido) {
+    console.info(`[Acme School] Se calificó un examen cuyo tiempo terminó: ${resultadoVencido.examen.codigo}.`);
+  }
 
   iniciarEnrutador({
     rutas: RUTAS,

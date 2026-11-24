@@ -41,6 +41,12 @@ export const NOMBRES_CARGOS = Object.freeze({
   [CARGOS.DOCENTE]: 'Docente',
 });
 
+/** Cómo terminó un examen: el estudiante pulsó "Terminar" o se acabó el tiempo. */
+export const MOTIVOS_FINALIZACION = Object.freeze({
+  ESTUDIANTE: 'estudiante',
+  TIEMPO: 'tiempo',
+});
+
 /** Tiempo que dura una sesión antes de pedir de nuevo el inicio de sesión. */
 export const DURACION_SESION_MS = 8 * 60 * 60 * 1000; // 8 horas
 

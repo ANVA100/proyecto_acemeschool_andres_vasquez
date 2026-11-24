@@ -144,6 +144,11 @@ class DialogoConfirmacion extends HTMLElement {
     });
   }
 
+  /** Cierra el diálogo como si se hubiera cancelado (si está abierto). */
+  cancelar() {
+    if (this.#dialogo.open) this.#dialogo.close('false');
+  }
+
   #alHacerClic = (evento) => {
     const boton = evento.target.closest('[data-respuesta]');
     if (boton) {
@@ -174,4 +179,9 @@ export function confirmar(opciones) {
     document.body.append(dialogo);
   }
   return dialogo.abrir(opciones);
+}
+
+/** Cierra la confirmación abierta, si hay alguna (p. ej. cuando se acaba el tiempo del examen). */
+export function cancelarConfirmacion() {
+  document.querySelector('dialogo-confirmacion')?.cancelar();
 }
