@@ -62,7 +62,7 @@ class VistaUsuarios extends HTMLElement {
 
     this.#formulario = this.querySelector('formulario-usuario');
     this.#tabla = this.querySelector('tabla-usuarios');
-    this.#contador = this.querySelector('[data-ref="contador"]');
+    this.#contador = this.querySelector('.tarjeta--tabla [data-ref="contador"]');
 
     this.addEventListener('guardar-usuario', this.#alGuardar);
     this.addEventListener('editar-usuario', this.#alEditar);

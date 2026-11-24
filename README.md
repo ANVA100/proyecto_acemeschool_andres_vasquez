@@ -5,7 +5,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 - **Área privada** (requiere iniciar sesión): el personal administrativo y docente gestiona usuarios, exámenes y preguntas.
 - **Módulo público**: los estudiantes eligen un examen, se identifican y lo presentan con un reloj en tiempo real. Al terminar ven su porcentaje de aciertos y si aprobaron.
 
-> 🚧 **Proyecto en construcción** · Avance actual: **Parte 5 de 10**
+> 🚧 **Proyecto en construcción** · Avance actual: **Parte 6 de 10**
 
 ---
 
@@ -18,7 +18,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | 3 | Enrutador SPA y Web Components compartidos (encabezado, notificaciones, diálogos, modo oscuro) | ✅ |
 | 4 | Login y protección de las rutas privadas | ✅ |
 | 5 | Gestión de usuarios (crear, listar, actualizar, eliminar) | ✅ |
-| 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ⏳ |
+| 6 | Gestión de exámenes (crear, listar, actualizar, eliminar) con opción de orden aleatorio | ✅ |
 | 7 | Preguntas y respuestas de cada examen | ⏳ |
 | 8 | Módulo público: catálogo de exámenes e identificación del estudiante | ⏳ |
 | 9 | Presentación del examen con temporizador en tiempo real, preguntas en orden aleatorio y resultado | ⏳ |
@@ -94,6 +94,7 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     │   ├── almacenamiento.js   # Único módulo que lee/escribe localStorage (JSON)
     │   ├── coleccion.js        # CRUD genérico reutilizable (crear, leer, actualizar, eliminar)
     │   ├── servicio-autenticacion.js  # Login, logout, sesión con expiración y ruta pendiente
+    │   ├── servicio-examenes.js       # Reglas de negocio de exámenes (validación, código único)
     │   ├── servicio-tema.js    # Modo claro / oscuro
     │   └── servicio-usuarios.js       # Reglas de negocio de usuarios (validación, únicos, cifrado)
     ├── utilidades/
@@ -107,6 +108,10 @@ También se crean 3 exámenes de ejemplo: *Fundamentos de JavaScript* y *Cultura
     └── componentes/
         ├── autenticacion/
         │   └── vista-login.js
+        ├── examenes/
+        │   ├── vista-examenes.js       # Orquesta formulario + tabla + buscador
+        │   ├── formulario-examen.js    # Crear / editar (emite "guardar-examen")
+        │   └── tabla-examenes.js       # Lista con acceso a las preguntas de cada examen
         ├── usuarios/
         │   ├── vista-usuarios.js       # Orquesta formulario + tabla + buscador
         │   ├── formulario-usuario.js   # Crear / editar (emite "guardar-usuario")
@@ -197,6 +202,26 @@ La vista tiene un **formulario** (crear / actualizar), una **tabla** con los usu
 - Si el usuario se edita a sí mismo, el encabezado se actualiza al instante.
 - **Buscador**: filtra por nombre, correo, identificación, teléfono o cargo, sin importar mayúsculas ni tildes ("gomez" encuentra "Gómez").
 - En el celular la tabla se transforma en tarjetas.
+
+---
+
+## 📝 Gestión de exámenes (`#/admin/examenes`)
+
+Misma estructura que usuarios: **formulario** (crear / actualizar), **tabla** de exámenes registrados y **botones para editar y eliminar**. Cada fila tiene además un botón para gestionar sus **preguntas**.
+
+| Campo | Reglas |
+|-------|--------|
+| Código | Obligatorio, 2 a 15 caracteres (letras, números y guiones), **único**. Se guarda en mayúsculas |
+| Título | Obligatorio, 3 a 100 caracteres |
+| Tiempo | Obligatorio, minutos enteros entre 1 y 300 |
+| Porcentaje de aprobación | Obligatorio, entero entre 1 y 100 |
+| Descripción | Obligatoria, 10 a 500 caracteres (con contador) |
+| Mezclar preguntas y respuestas | Interruptor opcional (extra): cada estudiante ve un orden aleatorio distinto |
+
+- La tabla indica cuántas preguntas tiene cada examen. Los que aún **no tienen preguntas** se marcan con un aviso porque **no aparecen en el catálogo público**.
+- Al editar los datos generales, las preguntas del examen se conservan.
+- Al eliminar un examen se avisa cuántas preguntas se borrarán. Los resultados ya registrados se conservan.
+- El buscador filtra por código, título o descripción.
 
 ---
 

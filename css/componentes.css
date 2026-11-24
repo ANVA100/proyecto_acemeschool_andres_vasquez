@@ -392,6 +392,117 @@ select.campo__entrada {
   height: 1.125rem;
 }
 
+/* Unidad dentro del campo (p. ej. "min" o "%") */
+.campo__sufijo {
+  position: absolute;
+  right: var(--espacio-3);
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  pointer-events: none;
+}
+
+/* Oculta las flechas de los campos numéricos (taparían el sufijo) */
+.campo__entrada[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.campo__entrada[type='number']::-webkit-inner-spin-button,
+.campo__entrada[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.campo__entrada--mayusculas {
+  text-transform: uppercase;
+}
+
+.campo__entrada--mayusculas::placeholder {
+  text-transform: none;
+}
+
+.campo__contador {
+  text-align: right;
+}
+
+/* Fila de dos campos cortos que no se apila (p. ej. tiempo y porcentaje) */
+.formulario__fila--compacta {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ==========================================================================
+   INTERRUPTOR (checkbox con aspecto de switch)
+   El <input> sigue existiendo (accesible y enfocable), solo se oculta a la vista.
+   ========================================================================== */
+.interruptor {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie-alterna);
+  cursor: pointer;
+}
+
+.interruptor__entrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.interruptor__pista {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  margin-top: 0.1rem;
+  border-radius: var(--radio-completo);
+  background-color: var(--color-texto-tenue);
+  transition: background-color var(--transicion-rapida);
+}
+
+.interruptor__pista::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(1.5rem - 6px);
+  height: calc(1.5rem - 6px);
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: var(--sombra-sm);
+  transition: transform var(--transicion-media);
+}
+
+.interruptor__entrada:checked + .interruptor__pista {
+  background-color: var(--color-primario);
+}
+
+.interruptor__entrada:checked + .interruptor__pista::after {
+  transform: translateX(1.25rem);
+}
+
+.interruptor__entrada:focus-visible + .interruptor__pista {
+  outline: 3px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+.interruptor__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: var(--texto-sm);
+}
+
+.interruptor__texto small {
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+}
+
 /* ==========================================================================
    TABLAS
    ========================================================================== */
