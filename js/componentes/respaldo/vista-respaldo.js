@@ -91,7 +91,7 @@ class VistaRespaldo extends HTMLElement {
           <h2 class="tarjeta__titulo" id="titulo-restablecer">Restablecer demostración</h2>
           <p class="texto-secundario">
             Borra todos los usuarios, exámenes y resultados, y vuelve a crear los datos de ejemplo
-            (2 usuarios y 3 exámenes).
+            (2 usuarios y 4 exámenes).
           </p>
           <button type="button" class="btn btn--peligro-fantasma" data-accion="restablecer">
             ${icono('reiniciar')} Restablecer datos

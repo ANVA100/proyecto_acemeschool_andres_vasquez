@@ -23,6 +23,7 @@ import './componentes/compartidos/tarjeta-estadistica.js';
 
 // Vistas (cada una importa sus propios componentes internos)
 import './componentes/generales/vista-no-encontrada.js';
+import './componentes/generales/vista-componentes.js';
 import './componentes/autenticacion/vista-login.js';
 import './componentes/usuarios/vista-usuarios.js';
 import './componentes/examenes/vista-examenes.js';

@@ -15,10 +15,14 @@
  *  - redirigir:     envía automáticamente a otra ruta.
  */
 export const RUTAS = [
-  // Módulo público
-  { patron: '/', componente: 'vista-catalogo', titulo: 'Exámenes disponibles' },
-  { patron: '/examen/:id', componente: 'vista-examen', titulo: 'Presentando examen', modo: 'examen' },
+  // Al abrir la app se muestra el login (si ya hay sesión, la guardia lleva al área privada)
+  { patron: '/', redirigir: '/login' },
   { patron: '/login', componente: 'vista-login', titulo: 'Iniciar sesión', soloInvitados: true },
+
+  // Módulo público (sin iniciar sesión)
+  { patron: '/examenes', componente: 'vista-catalogo', titulo: 'Exámenes disponibles' },
+  { patron: '/examen/:id', componente: 'vista-examen', titulo: 'Presentando examen', modo: 'examen' },
+  { patron: '/componentes', componente: 'vista-componentes', titulo: 'Galería de Web Components' },
 
   // Módulos privados
   { patron: '/admin', redirigir: '/admin/examenes' },

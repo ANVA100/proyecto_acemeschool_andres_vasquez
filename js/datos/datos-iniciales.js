@@ -5,7 +5,7 @@
  * podría iniciar sesión (para crear usuarios hay que estar autenticado).
  * Por eso aquí se crean:
  *  - 2 usuarios de prueba (administrativo y docente).
- *  - 3 exámenes de ejemplo (dos con preguntas y uno vacío).
+ *  - 4 exámenes de ejemplo (tres con preguntas, uno de ellos de 1 minuto, y uno vacío).
  *
  * Solo se crean si la colección NO existe todavía; así nunca se duplican ni
  * se pisan los datos que el usuario ya creó.
@@ -118,6 +118,32 @@ const EXAMENES_INICIALES = [
       {
         enunciado: '¿Cuál es la fórmula química del agua?',
         opciones: ['CO₂', 'H₂O', 'O₂', 'NaCl'],
+        correcta: 1,
+      },
+    ],
+  },
+  {
+    // Examen corto para comprobar que el reloj llega a 0 y el examen se envía solo
+    codigo: 'REL-01',
+    titulo: 'Reto relámpago',
+    tiempoMinutos: 1,
+    porcentajeAprobacion: 60,
+    descripcion: 'Tres preguntas rápidas de cálculo y cultura general. ¡Solo tienes 1 minuto!',
+    mezclarPreguntas: false,
+    preguntas: [
+      {
+        enunciado: '¿Cuántos minutos tiene una hora?',
+        opciones: ['30', '60', '100'],
+        correcta: 1,
+      },
+      {
+        enunciado: '¿Qué color se obtiene al mezclar azul y amarillo?',
+        opciones: ['Verde', 'Morado', 'Naranja'],
+        correcta: 0,
+      },
+      {
+        enunciado: '¿Cuál es el resultado de 7 × 8?',
+        opciones: ['54', '56', '64', '48'],
         correcta: 1,
       },
     ],

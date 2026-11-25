@@ -86,7 +86,7 @@ class VistaExamen extends HTMLElement {
         icono: 'examen',
         titulo: 'No tienes este examen en curso',
         texto: 'Para presentarlo, elígelo en el catálogo e identifícate.',
-        enlace: { href: '#/', texto: 'Ir al catálogo' },
+        enlace: { href: '#/examenes', texto: 'Ir al catálogo' },
       });
     }
   }
@@ -280,7 +280,7 @@ class VistaExamen extends HTMLElement {
         icono: 'alerta',
         titulo: 'No se pudo calificar el examen',
         texto: error.message,
-        enlace: { href: '#/', texto: 'Ir al catálogo' },
+        enlace: { href: '#/examenes', texto: 'Ir al catálogo' },
       });
     }
   }
@@ -343,7 +343,7 @@ class VistaExamen extends HTMLElement {
         <dl class="resultado__detalles">${detalles}</dl>
 
         <div class="resultado__acciones">
-          <a class="btn btn--primario btn--grande" href="#/">${icono('flecha-izquierda')} Volver al catálogo</a>
+          <a class="btn btn--primario btn--grande" href="#/examenes">${icono('flecha-izquierda')} Volver al catálogo</a>
         </div>
       </section>`;
   }

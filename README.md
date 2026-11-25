@@ -32,12 +32,12 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 
 | Requisito del proyecto | Implementación |
 |------------------------|----------------|
-| **Login** como vista inicial de los módulos privados, con correo y contraseña | `#/login`. Cualquier ruta privada sin sesión redirige al login y, tras iniciar sesión, regresa a la ruta solicitada |
+| **Login** como vista inicial, con correo y contraseña | Al abrir la app se muestra `#/login`. Cualquier ruta privada sin sesión redirige al login y, tras iniciar sesión, regresa a la ruta solicitada |
 | **Gestión de usuarios**: crear, actualizar y eliminar | `#/admin/usuarios`: tabla, formulario de creación/actualización y botones para editar y eliminar |
 | Datos de usuario: identificación, nombre, email, teléfono, cargo (Administrativo/Docente), contraseña | Todos los campos con validaciones. Identificación y email únicos. Contraseña cifrada (SHA-256 + sal) |
 | **Gestión de exámenes** (solo autenticados): código, título, tiempo, % de aprobación, descripción | `#/admin/examenes`: tabla, formulario y botones para editar y eliminar. Código único |
 | Preguntas por examen con respuestas (descripción + si es correcta), **solo una correcta** | `#/admin/examenes/:id/preguntas`: de 2 a 6 respuestas por pregunta y una sola marcada como correcta (radio + validación en el servicio) |
-| **Módulo de resolución público** (sin autenticación) | `#/` y `#/examen/:id` no exigen sesión |
+| **Módulo de resolución público** (sin autenticación) | `#/examenes` y `#/examen/:id` no exigen sesión. Se llega desde el enlace **Presentar examen** del encabezado o desde el login ("¿Eres estudiante?") |
 | Lista de exámenes con **título, tiempo y % para aprobar** | Catálogo con tarjetas `<tarjeta-examen>` (solo exámenes que ya tienen preguntas) |
 | Pedir **identificación y nombre completo** antes de empezar; quedan asociados a las respuestas | `<dialogo-estudiante>`. Cada resultado guarda `estudiante: { identificacion, nombreCompleto }` |
 | Encabezado del examen con **título, total de preguntas y % para aprobar** | Encabezado de `<vista-examen>` |
@@ -52,8 +52,8 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 | **Colores e identidad visual** coherentes | Tokens de diseño en `variables.css` (paleta índigo y ámbar) |
 | **Animaciones y transiciones** | Entrada de vistas, tarjetas, diálogos, notificaciones, reloj, anillo y confeti. Respetan "reducir movimiento" |
 | Interacción **fluida y sin bloqueos**, en especial con el tiempo | El reloj recalcula contra la hora de fin, no se desfasa y sobrevive a recargas |
-| **Web Components** | 26 Custom Elements; 9 de ellos con Shadow DOM (ver [Web Components](#-web-components)) |
-| Archivos **modularizados** y **README.md** | 47 módulos JS y 14 hojas CSS organizadas por capas |
+| **Web Components** | 27 Custom Elements; 9 de ellos con Shadow DOM. Galería interactiva en `#/componentes` (ver [Web Components](#-web-components)) |
+| Archivos **modularizados** y **README.md** | 48 módulos JS y 15 hojas CSS organizadas por capas |
 
 ---
 
@@ -61,6 +61,7 @@ Plataforma web para que la escuela **Acme School** cree, administre y aplique ex
 
 | Extra | Dónde |
 |-------|-------|
+| **Galería interactiva de Web Components** con registro de eventos en vivo | `#/componentes` (enlace en el pie de página) |
 | **Panel de resultados** con estadísticas, filtros y detalle de respuestas por estudiante | `#/admin/resultados` |
 | **Modo oscuro** (sigue la preferencia del sistema operativo y recuerda la elección) | Botón 🌙/☀️ del encabezado |
 | **Buscador** en las tablas y en el catálogo (sin importar mayúsculas ni tildes) | Usuarios, exámenes, resultados y catálogo |
@@ -95,10 +96,14 @@ La primera vez que se abre la aplicación se crean estos usuarios. El login tamb
 | Administrativo | `admin@acmeschool.edu` | `Admin123*` |
 | Docente | `docente@acmeschool.edu` | `Docente123*` |
 
-También se crean 3 exámenes de ejemplo:
-- *Fundamentos de JavaScript*: 6 preguntas, con orden aleatorio.
-- *Cultura general*: 5 preguntas.
-- *Álgebra básica*: sin preguntas, para mostrar que no aparece en el catálogo público.
+También se crean 4 exámenes de ejemplo:
+
+| Código | Examen | Tiempo | Preguntas | Para qué sirve |
+|--------|--------|:------:|:---------:|----------------|
+| `CG-001` | Cultura general | 5 min | 5 | Examen normal (una sola respuesta correcta por pregunta) |
+| `JS-101` | Fundamentos de JavaScript | 10 min | 6 | Examen normal con **orden aleatorio** |
+| `REL-01` | Reto relámpago | **1 min** | 3 | Ver cómo el reloj llega a 0 y el examen **se envía solo** |
+| `MAT-201` | Álgebra básica | 20 min | 0 | Mostrar que un examen sin preguntas **no aparece** en el catálogo |
 
 > Para volver a los datos de ejemplo: **Respaldo → Restablecer datos**, o en DevTools (F12) → Application → Local Storage → **Clear** y recargar.
 
@@ -108,7 +113,7 @@ También se crean 3 exámenes de ejemplo:
 
 1. **Crear el examen:** inicia sesión → **Exámenes** → completa el formulario (código, título, tiempo, % de aprobación, descripción) → **Crear examen**.
 2. **Agregar preguntas:** en la tabla, botón de lista (☰✓) del examen → escribe el enunciado y las respuestas, **toca la letra de la correcta** → **Agregar pregunta**. Con la primera pregunta el examen aparece en el catálogo.
-3. **Presentar el examen** (sin sesión): **Catálogo** → **Presentar examen** → escribe identificación y nombre → **Comenzar examen**.
+3. **Presentar el examen** (sin sesión): cierra sesión → enlace **Presentar examen** del encabezado → botón **Presentar examen** de la tarjeta → escribe identificación y nombre → **Comenzar examen**.
 4. **Responder:** elige una respuesta por pregunta mientras corre el reloj. Puedes recargar la página: nada se pierde.
 5. **Terminar:** botón **Terminar examen** (o espera a que el reloj llegue a 0) → verás el **porcentaje de aciertos** y si **aprobaste**.
 6. **Consultar:** inicia sesión → **Resultados** para ver el historial, las estadísticas y el detalle de cada intento.
@@ -173,7 +178,8 @@ index.html
 │   ├── animaciones.css     # Keyframes y soporte de movimiento reducido
 │   └── vistas/             # Estilos de cada pantalla
 │       ├── generales.css   ├── login.css      ├── admin.css      ├── preguntas.css
-│       ├── catalogo.css    ├── examen.css     ├── resultados.css └── respaldo.css
+│       ├── catalogo.css    ├── examen.css     ├── resultados.css ├── respaldo.css
+│       └── galeria.css     # Galería de Web Components
 └── js/
     ├── main.js             # Punto de entrada
     ├── enrutador.js        # SPA por hash: rutas, parámetros, guardia, foco y títulos
@@ -199,7 +205,7 @@ index.html
     └── componentes/
         ├── compartidos/    # encabezado-app, contenedor-notificaciones, dialogo-confirmacion,
         │                   # campo-busqueda, estado-vacio, tarjeta-estadistica
-        ├── generales/      # vista-no-encontrada (404)
+        ├── generales/      # vista-no-encontrada (404), vista-componentes (galería)
         ├── autenticacion/  # vista-login
         ├── usuarios/       # vista-usuarios, formulario-usuario, tabla-usuarios
         ├── examenes/       # vista-examenes, formulario-examen, tabla-examenes,
@@ -325,7 +331,21 @@ Cada pieza de la interfaz es un **Custom Element** (`class … extends HTMLEleme
 | `<dialogo-estudiante>` | Sí | Identificación del estudiante. `await pedirDatosEstudiante(examen)`. |
 | `<temporizador-examen>` | Sí | Reloj en tiempo real. Atributos `finaliza-en` y `duracion`; emite `tiempo-agotado`. Se personaliza con variables CSS. |
 | `<anillo-progreso>` | Sí | Porcentaje como anillo SVG animado. |
-| Vistas, formularios, tablas y listas | No | `<vista-login>`, `<vista-usuarios>`, `<formulario-usuario>`, `<tabla-usuarios>`, `<vista-examenes>`, `<formulario-examen>`, `<tabla-examenes>`, `<vista-preguntas>`, `<formulario-pregunta>`, `<lista-preguntas>`, `<vista-catalogo>`, `<vista-examen>`, `<vista-resultados>`, `<tabla-resultados>`, `<vista-respaldo>`, `<vista-no-encontrada>` |
+| Vistas, formularios, tablas y listas | No | `<vista-login>`, `<vista-usuarios>`, `<formulario-usuario>`, `<tabla-usuarios>`, `<vista-examenes>`, `<formulario-examen>`, `<tabla-examenes>`, `<vista-preguntas>`, `<formulario-pregunta>`, `<lista-preguntas>`, `<vista-catalogo>`, `<vista-examen>`, `<vista-resultados>`, `<tabla-resultados>`, `<vista-respaldo>`, `<vista-no-encontrada>`, `<vista-componentes>` |
+
+### 🎁 Galería interactiva (`#/componentes`)
+
+Se abre desde el enlace **Galería de Web Components** del pie de página, sin necesidad de iniciar sesión. Allí cada componente reutilizable funciona en vivo:
+
+- `<tarjeta-examen>`: controles que cambian sus **atributos** (`titulo`, `tiempo`, `porcentaje`, `aleatorio`). El componente se actualiza solo gracias a `observedAttributes` + `attributeChangedCallback`.
+- `<temporizador-examen>`: botones para iniciar un reloj de 15 s o de 1:15. Cambia de color y emite `tiempo-agotado`.
+- `<anillo-progreso>`: un control deslizante cambia su `valor` y su `estado`.
+- `<tarjeta-estadistica>`, `<campo-busqueda>` y `<estado-vacio>` (con contenido insertado por `<slot>`).
+- `<contenedor-notificaciones>`, `<dialogo-confirmacion>` y `<dialogo-estudiante>`, que devuelven promesas.
+- Un **registro de eventos** muestra cada `CustomEvent` que emiten los componentes, con su `detail`.
+- Una **tabla con los 27 Custom Elements**: si usan Shadow DOM y en qué archivo están.
+
+> Para ver el encapsulamiento: DevTools → **Elements** → expande, por ejemplo, `<tarjeta-examen>` y aparecerá `#shadow-root (open)`.
 
 **¿Por qué algunos usan Shadow DOM y otros no?**
 
@@ -342,9 +362,11 @@ SPA con un solo `index.html`: el enrutador cambia la vista según el *hash* de l
 
 | Ruta | Vista | Acceso |
 |------|-------|--------|
-| `#/` | Catálogo de exámenes disponibles | Público |
-| `#/examen/:id` | Presentar un examen y ver el resultado | Público |
+| `#/` | Redirige al login (vista inicial) | — |
 | `#/login` | Inicio de sesión | Público (con sesión redirige al área privada) |
+| `#/examenes` | Catálogo de exámenes disponibles | Público |
+| `#/examen/:id` | Presentar un examen y ver el resultado | Público |
+| `#/componentes` | Galería interactiva de Web Components | Público |
 | `#/admin/examenes` | Gestión de exámenes | Privado |
 | `#/admin/examenes/:id/preguntas` | Preguntas de un examen | Privado |
 | `#/admin/usuarios` | Gestión de usuarios | Privado |
@@ -399,7 +421,7 @@ Cualquier otra ruta muestra la página 404.
 - Se pueden reordenar las preguntas con ↑ ↓.
 - La respuesta correcta se indica con color **y** con texto ("Correcta").
 
-### 🎓 Catálogo e identificación (`#/`)
+### 🎓 Catálogo e identificación (`#/examenes`)
 - Muestra solo los exámenes con preguntas, con **título, tiempo y % para aprobar**, y tiene buscador.
 - Antes de empezar se piden **identificación y nombre completo**, y se muestran las instrucciones.
 - Solo hay **un examen en curso por navegador**. Si existe, el catálogo muestra un aviso con el botón **Continuar examen**.
@@ -500,6 +522,7 @@ El proyecto se construyó de forma incremental, una parte por commit:
 | 8 | Módulo público: catálogo e identificación del estudiante |
 | 9 | Presentación del examen con temporizador en tiempo real y resultado |
 | 10 | Panel de resultados, respaldo JSON, revisión de accesibilidad y documentación final |
+| + | Ajustes para la sustentación: login como vista inicial, examen de 1 minuto y galería de Web Components |
 
 ---
 

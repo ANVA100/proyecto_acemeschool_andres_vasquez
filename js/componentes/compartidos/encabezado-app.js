@@ -23,13 +23,13 @@ import { notificar } from './contenedor-notificaciones.js';
 
 /** Enlaces visibles para cualquier visitante. */
 const ENLACES_PUBLICOS = [
-  { ruta: '/', texto: 'Exámenes', icono: 'examen' },
+  { ruta: '/examenes', texto: 'Presentar examen', icono: 'birrete' },
   { ruta: '/login', texto: 'Acceso personal', icono: 'entrar' },
 ];
 
 /** Enlaces del área privada (solo con sesión iniciada). */
 const ENLACES_PRIVADOS = [
-  { ruta: '/', texto: 'Catálogo', icono: 'birrete' },
+  { ruta: '/examenes', texto: 'Catálogo', icono: 'birrete' },
   { ruta: '/admin/examenes', texto: 'Exámenes', icono: 'examen' },
   { ruta: '/admin/usuarios', texto: 'Usuarios', icono: 'usuarios' },
   { ruta: '/admin/resultados', texto: 'Resultados', icono: 'grafica' },

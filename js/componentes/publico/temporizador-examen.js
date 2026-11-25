@@ -194,6 +194,8 @@ class TemporizadorExamen extends HTMLElement {
     clearInterval(this.#intervalo);
     this.#agotado = false;
     this.#ultimoSegundo = null;
+    // Sin hora de fin todavía: el reloj espera (no debe "agotarse" de inmediato)
+    if (!this.hasAttribute('finaliza-en')) return;
     // Los avisos que ya pasaron no se repiten (p. ej. al recargar con 2 minutos restantes)
     const restantes = this.segundosRestantes;
     this.#avisosDados = new Set(AVISOS.filter((aviso) => restantes <= aviso.segundos).map((aviso) => aviso.segundos));

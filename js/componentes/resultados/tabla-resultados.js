@@ -97,7 +97,7 @@ class TablaResultados extends HTMLElement {
              mensaje="Ningún intento coincide con los filtros elegidos."></estado-vacio>`
         : `<estado-vacio icono="grafica" titulo="Todavía no hay resultados"
              mensaje="Cuando los estudiantes presenten exámenes, aquí verás su porcentaje de aciertos y si aprobaron.">
-             <a class="btn btn--secundario" href="#/">Ir al catálogo de exámenes</a>
+             <a class="btn btn--secundario" href="#/examenes">Ir al catálogo de exámenes</a>
            </estado-vacio>`;
       return;
     }

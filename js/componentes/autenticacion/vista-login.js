@@ -133,7 +133,11 @@ class VistaLogin extends HTMLElement {
             <div class="grupo-botones">${botonesDemo}</div>
           </div>
 
-          <a class="login__volver" href="#/">${icono('flecha-izquierda')} Volver al catálogo de exámenes</a>
+          <a class="login__estudiante" href="#/examenes">
+            ${icono('birrete')}
+            <span><strong>¿Eres estudiante?</strong> Presenta un examen sin iniciar sesión</span>
+            ${icono('flecha-derecha')}
+          </a>
         </div>
       </section>`;
   }
