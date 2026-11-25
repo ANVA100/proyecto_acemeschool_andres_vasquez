@@ -249,6 +249,44 @@ export function finalizarIntentosVencidos() {
   }
 }
 
+/* ==========================================================================
+   HISTORIAL DE RESULTADOS (panel privado)
+   ========================================================================== */
+
+/** @returns {object[]} Resultados del más reciente al más antiguo. */
+export function obtenerResultados() {
+  return resultados.obtenerTodos().sort((a, b) => String(b.finalizadoEn).localeCompare(String(a.finalizadoEn)));
+}
+
+/** @returns {object|null} */
+export function obtenerResultadoPorId(id) {
+  return resultados.obtenerPorId(id);
+}
+
+/** Elimina un resultado del historial. */
+export function eliminarResultado(id) {
+  if (!resultados.eliminar(id)) throw new Error('El resultado que intentas eliminar ya no existe.');
+}
+
+/**
+ * Estadísticas de una lista de resultados.
+ * @param {object[]} lista
+ * @returns {{total: number, aprobados: number, reprobados: number, tasaAprobacion: number, promedio: number, estudiantes: number}}
+ */
+export function calcularEstadisticas(lista) {
+  const total = lista.length;
+  const aprobados = lista.filter((resultado) => resultado.aprobado).length;
+  const sumaPorcentajes = lista.reduce((suma, resultado) => suma + resultado.porcentajeObtenido, 0);
+  return {
+    total,
+    aprobados,
+    reprobados: total - aprobados,
+    tasaAprobacion: total > 0 ? (aprobados / total) * 100 : 0,
+    promedio: total > 0 ? sumaPorcentajes / total : 0,
+    estudiantes: new Set(lista.map((resultado) => resultado.estudiante.identificacion)).size,
+  };
+}
+
 /**
  * Último resultado de esta pestaña para un examen (para mostrarlo de nuevo
  * si se recarga la página después de terminar).

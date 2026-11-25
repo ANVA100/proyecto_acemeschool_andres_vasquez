@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VISTAS GENERALES · Carga inicial, página 404 y vista "en construcción"
+   VISTAS GENERALES · Carga inicial, página 404 y mensajes centrados
    ========================================================================== */
 
 /* Los custom elements son "inline" por defecto: las vistas deben ser bloques */
@@ -14,7 +14,7 @@
   min-height: 40vh;
 }
 
-/* Mensaje centrado (404, en construcción...) */
+/* Mensaje centrado (404, examen no encontrado...) */
 .vista-mensaje {
   display: flex;
   flex-direction: column;
@@ -40,11 +40,6 @@
 .vista-mensaje__icono svg {
   width: 2rem;
   height: 2rem;
-}
-
-.vista-mensaje__icono--acento {
-  background-color: var(--color-acento-suave);
-  color: var(--color-acento-texto);
 }
 
 .vista-mensaje__codigo {

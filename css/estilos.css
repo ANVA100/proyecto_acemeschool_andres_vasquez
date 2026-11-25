@@ -7,7 +7,7 @@
    3. layout       → estructura de la página y rejillas
    4. componentes  → botones, tarjetas, formularios, tablas...
    5. animaciones  → keyframes y movimiento reducido
-   6. vistas       → estilos propios de cada pantalla (se agregan por partes)
+   6. vistas       → estilos propios de cada pantalla
    ========================================================================== */
 
 @import url('./variables.css');
@@ -23,3 +23,5 @@
 @import url('./vistas/preguntas.css');
 @import url('./vistas/catalogo.css');
 @import url('./vistas/examen.css');
+@import url('./vistas/resultados.css');
+@import url('./vistas/respaldo.css');

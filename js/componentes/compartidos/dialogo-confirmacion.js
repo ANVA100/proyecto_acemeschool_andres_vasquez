@@ -81,8 +81,8 @@ plantilla.innerHTML = `
         </div>
       </div>
       <div class="dialogo__acciones">
-        <button type="button" class="btn btn--fantasma" data-respuesta="false"></button>
-        <button type="button" class="btn" data-respuesta="true"></button>
+        <button type="button" class="btn btn--fantasma" data-respuesta="false">Cancelar</button>
+        <button type="button" class="btn btn--primario" data-respuesta="true">Aceptar</button>
       </div>
     </div>
   </dialog>

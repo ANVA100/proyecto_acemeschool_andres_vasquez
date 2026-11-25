@@ -8,8 +8,9 @@
  *  1. Registrar los Web Components (al importarlos se ejecuta su
  *     customElements.define y el navegador "activa" las etiquetas del HTML).
  *  2. Tema claro/oscuro y detalles de la interfaz.
- *  3. Datos: la primera vez se crean los usuarios y exámenes de ejemplo.
- *  4. Enrutador: pinta la vista que corresponde a la URL.
+ *  3. Datos: la primera vez se crean los usuarios y exámenes de ejemplo; si
+ *     un examen quedó sin tiempo con la página cerrada, se califica.
+ *  4. Enrutador (con la guardia de rutas privadas) y vigilancia de la sesión.
  */
 
 // 1. Web Components compartidos
@@ -18,18 +19,18 @@ import './componentes/compartidos/contenedor-notificaciones.js';
 import './componentes/compartidos/dialogo-confirmacion.js';
 import './componentes/compartidos/campo-busqueda.js';
 import './componentes/compartidos/estado-vacio.js';
+import './componentes/compartidos/tarjeta-estadistica.js';
 
-// Vistas generales
+// Vistas (cada una importa sus propios componentes internos)
 import './componentes/generales/vista-no-encontrada.js';
-import './componentes/generales/vista-en-construccion.js';
-
-// Vistas de cada módulo
 import './componentes/autenticacion/vista-login.js';
 import './componentes/usuarios/vista-usuarios.js';
 import './componentes/examenes/vista-examenes.js';
 import './componentes/examenes/vista-preguntas.js';
 import './componentes/publico/vista-catalogo.js';
 import './componentes/publico/vista-examen.js';
+import './componentes/resultados/vista-resultados.js';
+import './componentes/respaldo/vista-respaldo.js';
 
 import { notificar } from './componentes/compartidos/contenedor-notificaciones.js';
 import { CLAVES_ALMACENAMIENTO } from './config/constantes.js';

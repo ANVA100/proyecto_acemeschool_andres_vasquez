@@ -31,6 +31,8 @@ plantilla.innerHTML = `
       pointer-events: none;
     }
 
+    *, *::before, *::after { box-sizing: border-box; }
+
     .region {
       display: flex;
       flex-direction: column;

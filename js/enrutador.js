@@ -17,9 +17,6 @@ import { NOMBRE_APLICACION } from './config/constantes.js';
 /** Vista que se muestra cuando ninguna ruta coincide. */
 const RUTA_NO_ENCONTRADA = Object.freeze({ componente: 'vista-no-encontrada', titulo: 'Página no encontrada' });
 
-/** Vista temporal para rutas cuyo componente aún no existe. */
-const VISTA_EN_CONSTRUCCION = 'vista-en-construccion';
-
 let rutasCompiladas = [];
 let contenedor = null;
 let guardia = null;
@@ -89,8 +86,12 @@ function enfocarTitulo(vista) {
 
 /** Crea la vista de la ruta y reemplaza la que estaba en pantalla. */
 function mostrarVista(definicion, ruta, parametros) {
-  const etiqueta = customElements.get(definicion.componente) ? definicion.componente : VISTA_EN_CONSTRUCCION;
-  const vista = document.createElement(etiqueta);
+  // Si el componente de la ruta no se registró (olvido en main.js), se avisa y se muestra la 404
+  if (!customElements.get(definicion.componente)) {
+    console.error(`[Enrutador] El componente <${definicion.componente}> no está registrado.`);
+    definicion = RUTA_NO_ENCONTRADA;
+  }
+  const vista = document.createElement(definicion.componente);
 
   // El contexto se asigna ANTES de insertar la vista, así su connectedCallback ya lo tiene
   vista.contexto = { ruta, parametros, definicion };

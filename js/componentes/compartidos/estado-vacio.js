@@ -20,6 +20,7 @@ const plantilla = document.createElement('template');
 plantilla.innerHTML = `
   <style>
     :host { display: block; }
+    *, *::before, *::after { box-sizing: border-box; }
 
     .estado {
       display: flex;

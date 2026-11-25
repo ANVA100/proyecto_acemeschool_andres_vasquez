@@ -1,0 +1,197 @@
+/* ==========================================================================
+   VISTA RESULTADOS · Estadísticas, filtros, historial y detalle
+   ========================================================================== */
+
+tabla-resultados {
+  display: block;
+}
+
+/* ---------- Tarjetas de estadísticas ---------- */
+.estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-6);
+}
+
+/* ---------- Filtros ---------- */
+.filtros-resultados {
+  display: flex;
+  flex: 1 1 30rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--espacio-3);
+}
+
+.filtros-resultados__busqueda {
+  flex: 1 1 14rem;
+  max-width: 20rem;
+}
+
+.filtros-resultados__select {
+  flex: 0 1 13rem;
+  width: auto;
+}
+
+@media (max-width: 640px) {
+  .filtros-resultados__busqueda,
+  .filtros-resultados__select {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}
+
+/* ---------- Celdas de la tabla ---------- */
+.celda-resultado-examen,
+.celda-fecha,
+.celda-estado,
+.celda-aciertos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-1);
+}
+
+.celda-fecha {
+  font-size: var(--texto-xs);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .celda-resultado-examen,
+  .celda-fecha,
+  .celda-estado,
+  .celda-aciertos {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+/* Barra pequeña con el porcentaje de aciertos */
+.mini-barra {
+  display: block;
+  width: 6rem;
+  height: 6px;
+  border-radius: var(--radio-completo);
+  background-color: var(--color-superficie-alterna);
+  overflow: hidden;
+}
+
+.mini-barra span {
+  display: block;
+  width: var(--valor);
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-exito);
+}
+
+.mini-barra--peligro span {
+  background-color: var(--color-peligro);
+}
+
+/* ---------- Diálogo de detalle ---------- */
+.dialogo--ancho {
+  width: min(100% - 2 * var(--espacio-4), 46rem);
+}
+
+.detalle {
+  display: grid;
+  gap: var(--espacio-5);
+}
+
+.detalle__encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+}
+
+.detalle__antetitulo {
+  color: var(--color-primario-texto);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-negrita);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.detalle__resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-5);
+  padding: var(--espacio-4);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie-alterna);
+}
+
+.detalle__datos {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-2);
+}
+
+.detalle__subtitulo {
+  font-size: var(--texto-lg);
+}
+
+.detalle__preguntas {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+.detalle-pregunta {
+  display: grid;
+  gap: var(--espacio-1);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-left: 4px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-md);
+  font-size: var(--texto-sm);
+}
+
+.detalle-pregunta__enunciado {
+  color: var(--color-texto);
+  font-weight: var(--peso-seminegrita);
+}
+
+.detalle-pregunta__fila {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-2);
+}
+
+.detalle-pregunta__fila svg {
+  flex-shrink: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+}
+
+.detalle-pregunta__correcta {
+  padding-left: calc(1.1rem + var(--espacio-2));
+  color: var(--color-texto-secundario);
+}
+
+.detalle-pregunta--correcta {
+  border-left-color: var(--color-exito);
+}
+
+.detalle-pregunta--correcta .detalle-pregunta__fila {
+  color: var(--color-exito-texto);
+}
+
+.detalle-pregunta--incorrecta {
+  border-left-color: var(--color-peligro);
+}
+
+.detalle-pregunta--incorrecta .detalle-pregunta__fila {
+  color: var(--color-peligro-texto);
+}
+
+.detalle-pregunta--sin-responder {
+  border-left-color: var(--color-acento);
+}
+
+.detalle-pregunta--sin-responder .detalle-pregunta__fila {
+  color: var(--color-advertencia-texto);
+}

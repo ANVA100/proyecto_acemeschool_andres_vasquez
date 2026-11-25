@@ -1,0 +1,144 @@
+/* ==========================================================================
+   VISTA RESPALDO · Exportar, importar y restablecer datos
+   ========================================================================== */
+
+.rejilla-respaldo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  align-items: start;
+  gap: var(--espacio-6);
+}
+
+.respaldo-tarjeta {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+}
+
+.respaldo-tarjeta > .btn {
+  margin-top: var(--espacio-2);
+}
+
+.respaldo-tarjeta__icono {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radio-md);
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+}
+
+.respaldo-tarjeta__icono svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.respaldo-tarjeta--peligro {
+  border-color: var(--color-peligro-borde);
+}
+
+.respaldo-tarjeta--peligro .respaldo-tarjeta__icono {
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro-texto);
+}
+
+.respaldo-resumen {
+  display: grid;
+  gap: var(--espacio-1);
+  padding: 0;
+  list-style: none;
+  font-size: var(--texto-sm);
+}
+
+.respaldo-resumen li {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.respaldo-resumen svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-exito-texto);
+}
+
+/* ---------- Zona para elegir o arrastrar el archivo ---------- */
+.zona-archivo {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-2);
+  width: 100%;
+  padding: var(--espacio-8) var(--espacio-4);
+  border: 2px dashed var(--color-borde-fuerte);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie-alterna);
+  color: var(--color-texto-secundario);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--transicion-rapida),
+    background-color var(--transicion-rapida);
+}
+
+.zona-archivo svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-primario-texto);
+}
+
+.zona-archivo strong {
+  color: var(--color-enlace);
+}
+
+.zona-archivo small {
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+}
+
+.zona-archivo:hover,
+.zona-archivo--activa {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario-suave);
+}
+
+/* El input está oculto: el foco del teclado se muestra en la zona */
+.zona-archivo:has(input:focus-visible) {
+  outline: 3px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+.respaldo-previa {
+  display: grid;
+  gap: var(--espacio-3);
+  width: 100%;
+  padding: var(--espacio-4);
+  border: 1px solid var(--color-exito-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-exito-suave);
+}
+
+.respaldo-previa__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  color: var(--color-texto);
+  font-weight: var(--peso-seminegrita);
+  overflow-wrap: anywhere;
+}
+
+.respaldo-previa__titulo svg {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-exito-texto);
+}
+
+.respaldo-tarjeta .alerta {
+  width: 100%;
+}
+
+.respaldo-tarjeta .alerta ul {
+  margin: var(--espacio-2) 0 0;
+  padding-left: var(--espacio-5);
+}
